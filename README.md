@@ -1,5 +1,6 @@
-# PO_2023_WTO1300_KOTARA
-Jakub Kotara,
-Grupa 5 - wtorek, 13:00 
-zwierzak: Smakus
-https://gitexercises.fracz.com/committer/d19f782cfd6f5b87968ff365dab47dc63489b90d
+Ida Ciepiela, Jakub Kotara
+grupa wtorek 13:00
+
+wariant A1
+[A] piekielny portal - jeżeli zwierzak wyjdzie poza krawędź mapy, to trafia do magicznego portalu; jego energia zmniejsza się o pewną wartość (taką samą jak w przypadku generacji potomka), a następnie jest teleportowany w nowe, losowe wolne miejsce na mapie;
+[1] lekka korekta - mutacja zmienia gen o 1 w górę lub w dół (np. gen 3 może zostać zamieniony na 2 lub 4, a gen 0 na 1 lub 7);
