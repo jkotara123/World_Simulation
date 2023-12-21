@@ -1,9 +1,11 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.maps;
 
+import agh.ics.oop.model.elements.Animal;
+import agh.ics.oop.model.elements.Grass;
+import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.enums.MoveDirection;
 import agh.ics.oop.model.exceptions.IllegalPositionException;
-import agh.ics.oop.model.interfaces.WorldElement;
-import agh.ics.oop.model.interfaces.WorldMap;
+import agh.ics.oop.model.elements.WorldElement;
 import agh.ics.oop.model.util.RandomPositionsGenerator;
 
 import java.util.ArrayList;

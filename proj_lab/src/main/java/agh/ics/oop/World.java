@@ -1,7 +1,8 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
-import agh.ics.oop.model.util.ConsoleMapDisplay;
+import agh.ics.oop.model.observers.ConsoleMapDisplay;
+import agh.ics.oop.model.maps.GrassField;
 import agh.ics.oop.model.util.OptionsParser;
 import agh.ics.oop.presenter.SimulationPresenter;
 

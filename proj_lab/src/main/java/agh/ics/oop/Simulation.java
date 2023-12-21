@@ -1,9 +1,10 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.enums.MoveDirection;
 import agh.ics.oop.model.exceptions.IllegalPositionException;
-import agh.ics.oop.model.interfaces.WorldMap;
+import agh.ics.oop.model.maps.WorldMap;
 
 import java.util.ArrayList;
 import java.util.List;

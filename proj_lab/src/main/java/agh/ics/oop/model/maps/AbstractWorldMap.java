@@ -1,16 +1,15 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.maps;
 
+import agh.ics.oop.model.elements.Animal;
+import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.enums.MoveDirection;
 import agh.ics.oop.model.exceptions.IllegalPositionException;
-import agh.ics.oop.model.interfaces.MapChangeListener;
-import agh.ics.oop.model.interfaces.WorldElement;
-import agh.ics.oop.model.interfaces.WorldMap;
-import agh.ics.oop.model.util.MapVisualizer;
+import agh.ics.oop.model.observers.MapChangeListener;
+import agh.ics.oop.model.elements.WorldElement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public abstract class AbstractWorldMap implements WorldMap {
     protected final Map<Vector2d, Animal> animals;

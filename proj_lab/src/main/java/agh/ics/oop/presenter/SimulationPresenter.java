@@ -2,31 +2,24 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationEngine;
-import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.Boundary;
-import agh.ics.oop.model.GrassField;
+import agh.ics.oop.model.maps.Boundary;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.enums.MoveDirection;
-import agh.ics.oop.model.interfaces.MapChangeListener;
-import agh.ics.oop.model.interfaces.WorldElement;
-import agh.ics.oop.model.interfaces.WorldMap;
+import agh.ics.oop.model.observers.MapChangeListener;
+import agh.ics.oop.model.elements.WorldElement;
+import agh.ics.oop.model.maps.WorldMap;
 import agh.ics.oop.model.util.OptionsParser;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.sun.javafx.application.ParametersImpl.getParameters;
 
 
 public class SimulationPresenter implements MapChangeListener {

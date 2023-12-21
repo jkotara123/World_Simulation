@@ -2,9 +2,11 @@ package agh.ics.oop.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.enums.MoveDirection;
 import agh.ics.oop.model.exceptions.IllegalPositionException;
+import agh.ics.oop.model.maps.RectangularMap;
 import org.junit.jupiter.api.Test;
 
 public class RectangularMapTest {

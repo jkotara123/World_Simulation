@@ -1,8 +1,11 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.elements.Animal;
+import agh.ics.oop.model.elements.Grass;
 import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.enums.MoveDirection;
 import agh.ics.oop.model.exceptions.IllegalPositionException;
+import agh.ics.oop.model.maps.GrassField;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
