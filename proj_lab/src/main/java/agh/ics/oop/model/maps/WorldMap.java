@@ -1,7 +1,6 @@
 package agh.ics.oop.model.maps;
 
 import agh.ics.oop.model.elements.Animal;
-import agh.ics.oop.model.enums.MoveDirection;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.exceptions.IllegalPositionException;
 import agh.ics.oop.model.elements.WorldElement;
@@ -28,7 +27,7 @@ public interface WorldMap extends MoveValidator {
      * Moves an animal (if it is present on the map) according to specified direction.
      * If the move is not possible, this method has no effect.
      */
-    void move(Animal animal, MoveDirection direction);
+    void move(Animal animal);
 
     /**
      * Return true if given position on the map is occupied. Should not be

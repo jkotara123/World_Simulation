@@ -2,7 +2,7 @@ package agh.ics.oop.model.maps;
 
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.enums.MoveDirection;
+import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.exceptions.IllegalPositionException;
 import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.elements.WorldElement;
@@ -37,17 +37,19 @@ public abstract class AbstractWorldMap implements WorldMap {
             observer.mapChanged(this,message);
         }
     }
-    public void move(Animal animal, MoveDirection direction){
+    public void move(Animal animal){
         if(objectAt(animal.getPosition())==animal){
             Vector2d oldPosition = animal.getPosition();
+            MapDirection oldOrientation = animal.getOrientation();
             this.animals.remove(animal.getPosition());
-            animal.move(direction,this);
+            animal.move(this);
             this.animals.put(animal.getPosition(),animal);
-            switch (direction){
-                case FORWARD -> {if(oldPosition != animal.getPosition()) emitMessage("Zwierzak "+animal.getPosition()+" ruszyl do przodu");}
-                case BACKWARD -> {if(oldPosition != animal.getPosition()) emitMessage("Zwierzak "+animal.getPosition()+" ruszyl do tylu");}
-                case RIGHT -> emitMessage("Zwierzak "+animal.getPosition()+" obrocil sie w prawo");
-                case LEFT -> emitMessage("Zwierzak "+animal.getPosition()+" obrocil sie w lewo");
+
+            emitMessage("Animal on position " + animal.getPosition() +
+                        " changed orientation from " + oldOrientation + " to " + animal.getOrientation());
+
+            if (!animal.getPosition().equals(oldPosition)){
+                emitMessage("Animal moved from " + oldPosition + " to " + animal.getPosition());
             }
         }
     }

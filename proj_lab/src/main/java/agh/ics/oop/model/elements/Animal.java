@@ -2,21 +2,22 @@ package agh.ics.oop.model.elements;
 
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.enums.MapDirection;
-import agh.ics.oop.model.enums.MoveDirection;
 import agh.ics.oop.model.maps.MoveValidator;
 
 public class Animal implements WorldElement {
     private MapDirection orientation;
     private Vector2d position;
+    private final Genome genome;
 
     static final Vector2d DEFAULT_POSITION=new Vector2d(2,2);
 
-    public Animal(Vector2d position){
+    public Animal(Genome genome,Vector2d position){
+        this.genome = genome;
         this.position=position;
-        this.orientation=MapDirection.NORTH;
+        this.orientation=MapDirection.NORTH; // to ma być losowe
     }
-    public Animal(){
-        this(DEFAULT_POSITION);
+    public Animal(Genome genome){
+        this(genome,DEFAULT_POSITION);
     }
     public MapDirection getOrientation() {
         return this.orientation;
@@ -34,21 +35,17 @@ public class Animal implements WorldElement {
         return this.position.equals(position);
     }
 
-    public void turn(int turningValue){
-        orientation = orientation.turn(turningValue);
+    public void turn(){
+        orientation = orientation.turn(genome.getCurrent());
     }
-    public void move(MoveDirection direction, MoveValidator validator){
-        switch (direction){
-            case LEFT ->  this.orientation=this.orientation.previous();
-            case RIGHT -> this.orientation=this.orientation.next();
-            case FORWARD -> {
-                Vector2d newPosition = this.position.add(this.orientation.toUnitVector());
-                if (validator.canMoveTo(newPosition)) this.position = newPosition;
-            }
-            case BACKWARD -> {
-                Vector2d newPosition = this.position.subtract(this.orientation.toUnitVector());
-                if (validator.canMoveTo(newPosition))    this.position=newPosition;
-            }
+
+
+    public void move(MoveValidator validator){
+        turn(); // mozna to zlaczyc z nextIndex w sumie chyba ze bedziemy gdzies uzywac samego turn
+        genome.nextIndex();
+        Vector2d newPosition = this.position.add(this.orientation.toUnitVector());
+        if (validator.canMoveTo(newPosition)) {
+            this.position = newPosition;
         }
     }
 }
