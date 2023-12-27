@@ -1,9 +1,10 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.maps;
 
-import agh.ics.oop.model.enums.MoveDirection;
+import agh.ics.oop.model.elements.Animal;
+import agh.ics.oop.model.elements.Grass;
+import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.exceptions.IllegalPositionException;
-import agh.ics.oop.model.interfaces.WorldElement;
-import agh.ics.oop.model.interfaces.WorldMap;
+import agh.ics.oop.model.elements.WorldElement;
 import agh.ics.oop.model.util.RandomPositionsGenerator;
 
 import java.util.ArrayList;
@@ -40,8 +41,8 @@ public class GrassField extends AbstractWorldMap implements WorldMap {
         super.place(animal);
     }
     @Override
-    public void move(Animal animal, MoveDirection direction){
-        super.move(animal,direction);
+    public void move(Animal animal){
+        super.move(animal);
     }
     public void updateCorners(){
         Vector2d worldLowerLeft = grassBounds.lowerLeft();

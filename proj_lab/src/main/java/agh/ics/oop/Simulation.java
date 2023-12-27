@@ -1,23 +1,22 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
-import agh.ics.oop.model.enums.MoveDirection;
+import agh.ics.oop.model.elements.Animal;
+import agh.ics.oop.model.elements.Genome;
 import agh.ics.oop.model.exceptions.IllegalPositionException;
-import agh.ics.oop.model.interfaces.WorldMap;
+import agh.ics.oop.model.maps.WorldMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class Simulation implements Runnable{
-    private final List<MoveDirection> moveList;
     private final ArrayList<Animal> animalList = new ArrayList<>(0);
     private final WorldMap map;
-    public Simulation(List<MoveDirection> moveList, List<Vector2d> positionList, WorldMap map){
-        this.moveList=moveList;
+    public Simulation(List<Genome> genomeList, List<Vector2d> positionList, WorldMap map){
         this.map=map;
-        for(Vector2d position : positionList) {
-            Animal animal = new Animal(position);
+        for(int i = 0;i<genomeList.size();i++) {
+            Animal animal = new Animal(genomeList.get(i),positionList.get(i));
             try{
                 this.map.place(animal);
                 animalList.add(animal);
@@ -33,8 +32,10 @@ public class Simulation implements Runnable{
     }
     @Override
     public void run(){
-        for(int i=0;i < moveList.size();i++){
-            this.map.move(this.getAnimal(i%animalList.size()),moveList.get(i));
+        for(int i=0;i < 10;i++){ // na razie daje tu losowa liczbe jako liczbe wykonan
+            for (Animal animal: animalList){
+                this.map.move(animal);
+            }
             try {
                 Thread.sleep(700); // to jest niepewne
             } catch (InterruptedException e) {

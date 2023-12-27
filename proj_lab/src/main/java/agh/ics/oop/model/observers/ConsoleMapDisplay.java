@@ -1,7 +1,7 @@
-package agh.ics.oop.model.util;
+package agh.ics.oop.model.observers;
 
-import agh.ics.oop.model.interfaces.MapChangeListener;
-import agh.ics.oop.model.interfaces.WorldMap;
+import agh.ics.oop.model.maps.WorldMap;
+import agh.ics.oop.model.observers.MapChangeListener;
 
 public class ConsoleMapDisplay implements MapChangeListener {
     private int updateCounter=0;

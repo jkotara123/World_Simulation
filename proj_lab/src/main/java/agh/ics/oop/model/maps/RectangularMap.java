@@ -1,6 +1,6 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.maps;
 
-import agh.ics.oop.model.interfaces.WorldMap;
+import agh.ics.oop.model.Vector2d;
 
 public class RectangularMap extends AbstractWorldMap implements WorldMap {
     private final Boundary bounds;

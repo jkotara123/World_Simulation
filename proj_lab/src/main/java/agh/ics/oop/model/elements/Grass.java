@@ -1,6 +1,7 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.elements;
 
-import agh.ics.oop.model.interfaces.WorldElement;
+import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.elements.WorldElement;
 
 public class Grass implements WorldElement {
     private final Vector2d position;
