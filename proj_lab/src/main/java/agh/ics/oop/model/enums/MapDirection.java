@@ -34,13 +34,6 @@ public enum MapDirection {
             case NORTH_WEST -> "NW";
         };
     }
-    public MapDirection next(){
-        return MapDirection.values()[(this.ordinal()+1)%8];
-    }
-    public MapDirection previous(){
-        MapDirection[] values = MapDirection.values();
-        return values[(this.ordinal()+3)%8];
-    }
     public MapDirection turn(int turningValue){
         return MapDirection.values()[(this.ordinal()+turningValue)%8];
     }
