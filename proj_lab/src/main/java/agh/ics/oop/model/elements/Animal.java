@@ -4,10 +4,17 @@ import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.maps.MoveValidator;
 
-public class Animal implements WorldElement {
+import java.util.List;
+import java.util.Random;
+
+public class Animal implements WorldElement,Comparable<Animal> {
     private MapDirection orientation;
     private Vector2d position;
     private final Genome genome;
+    //te ponizej do konstruktora
+    private int energy;
+    private int lifeSpan;
+    private List<Animal> children;
 
     static final Vector2d DEFAULT_POSITION=new Vector2d(2,2);
 
@@ -25,6 +32,12 @@ public class Animal implements WorldElement {
     @Override
     public Vector2d getPosition() {
         return position;
+    }
+    public int getEnergy(){
+        return energy;
+    }
+    public int getLifeSpan(){
+        return lifeSpan;
     }
     @Override
     public String toString(){
@@ -47,5 +60,33 @@ public class Animal implements WorldElement {
         if (validator.canMoveTo(newPosition)) {
             this.position = newPosition;
         }
+    }
+    public void eat(Grass grass){
+        /*
+        myslalem w ten sposob, ze moze np trawa by przetrzymywala ile ma energii
+         */
+        this.energy += grass.getEnergy();
+    }
+
+    @Override
+    public int compareTo(Animal other) {
+        if(this.energy>other.energy){
+            return 1;
+        }
+        else if (this.energy == other.energy) {
+            if(this.lifeSpan > other.lifeSpan){
+                return 1;
+            }
+            else if(this.lifeSpan == other.lifeSpan){
+                if(this.children.size()>other.children.size()){
+                    return 1;
+                }
+                else if(this.children.size() == other.children.size()){
+                    Random rn = new Random();
+                    return rn.nextInt()%2 == 0 ? -1 : 0;
+                }
+            }
+        }
+        return -1;
     }
 }

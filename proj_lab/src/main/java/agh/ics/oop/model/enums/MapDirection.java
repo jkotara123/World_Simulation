@@ -49,4 +49,7 @@ public enum MapDirection {
             case NORTH_WEST -> NORTH_WEST_VECTOR;
         };
     }
+    public MapDirection oppositeDirection(){
+        return this.turn(4);
+    }
 }

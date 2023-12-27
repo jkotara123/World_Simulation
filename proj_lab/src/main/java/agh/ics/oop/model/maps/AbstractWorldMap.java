@@ -6,6 +6,7 @@ import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.exceptions.IllegalPositionException;
 import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.elements.WorldElement;
+import agh.ics.oop.model.util.MapVisualizer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
