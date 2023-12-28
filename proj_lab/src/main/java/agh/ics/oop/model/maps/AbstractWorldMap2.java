@@ -1,11 +1,14 @@
 package agh.ics.oop.model.maps;
 
+import agh.ics.oop.EnergyParameters;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Genome;
 import agh.ics.oop.model.elements.Grass;
 import agh.ics.oop.model.elements.WorldElement;
 import agh.ics.oop.model.enums.MapDirection;
+import agh.ics.oop.model.exceptions.IllegalPositionException;
+import agh.ics.oop.model.util.RandomPositionsGenerator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,15 +18,24 @@ public abstract class AbstractWorldMap2 implements WorldMap2 {
     protected final Map<Vector2d, List<Animal>> animalsAlive = new HashMap<>();
     protected final List<Animal> animalsDead = new ArrayList<>();
     protected final Map<Vector2d, Grass> grasses = new HashMap<>();
+    protected final Map<Genome,List<Animal>> genomeList = new HashMap<>();
     protected final Set<Vector2d> emptyPlacesOnEquator = new HashSet<>();
     protected final Set<Vector2d> emptyPlacesNotOnEquator = new HashSet<>();
-    protected Boundary mapBorders;
-    protected Boundary equator;
+    protected final Boundary mapBorders;
+    protected final Boundary equator;
+    protected final EnergyParameters energyParameters;
+    protected final RandomPositionsGenerator randomPositionsGenerator = new RandomPositionsGenerator();
 
+    public AbstractWorldMap2(Boundary mapBorders, EnergyParameters energyParameters) {
+        this.mapBorders = mapBorders;
+        this.equator = mapBorders; //TRZEBA ZROBIC
+        this.energyParameters = energyParameters;
+    }
 
     @Override
-    public void placeAnimal(Animal animal) {
+    public void placeAnimal(Animal animal){
         animalsAlive.get(animal.getPosition()).add(animal);
+        genomeList.get(animal.getGenome()).add(animal);
     }
     @Override
     public void removeAnimal(Animal animal) {
@@ -43,25 +55,26 @@ public abstract class AbstractWorldMap2 implements WorldMap2 {
         grasses.remove(grass.getPosition());
     }
     @Override
-    public boolean leavesMap(Animal animal) {
+    public boolean leavesMap(Animal animal) { // zmieniłam że ogolnie sprawdza czy bedzie na mapie a nie tylko na osi y
         Vector2d newPosition = animal.getPosition().add(animal.getOrientation().toUnitVector());
-        return (newPosition.y() <= mapBorders.upperRight().x() && newPosition.y() >= mapBorders.lowerLeft().y());
+        return (newPosition.precedes(mapBorders.upperRight()) && newPosition.follows(mapBorders.lowerLeft()));
     }
 
     @Override
     public void move(Animal animal) {
-        if(leavesMap(animal)) this.moveVariant(animal);
-        else moveNormally(animal);
+//        Vector2d oldPosition = animal.getPosition();
+//        Vector2d newPosition = animal.getPosition().add(animal.getOrientation().toUnitVector());
+        this.removeAnimal(animal);
+        this.moveVariant(animal);
+        this.placeAnimal(animal);
+//        if(leavesMap(animal)) this.moveVariant(animal);
+//        else moveNormally(animal);
     }
 
     @Override
     public void moveNormally(Animal animal) {
-//        Vector2d oldPosition = animal.getPosition();
-//        MapDirection oldOrientation = animal.getOrientation();
-        Vector2d newPosition = animal.getPosition().add(animal.getOrientation().toUnitVector());
-        this.removeAnimal(animal);
 //        animal.move(newPosition); //animal.move() powinien miec przekazywany wektor na ktory sie rusza zwierzak
-        this.placeAnimal(animal);
+//        this.placeAnimal(animal);
     }
 
     public abstract void moveVariant(Animal animal);
@@ -87,7 +100,7 @@ public abstract class AbstractWorldMap2 implements WorldMap2 {
     public void eatGrass(Vector2d position) {
         if (isGrassAt(position) && !animalsAt(position).isEmpty()){
             Grass grass = grasses.get(position);
-            kWinners(position,1).get(0).eat(grass);
+            kWinners(position,1).get(0).changeEnergy(energyParameters.energyFromEating());
             removeGrass(grass);
         }
     }
@@ -96,7 +109,11 @@ public abstract class AbstractWorldMap2 implements WorldMap2 {
     public void reproduce(Vector2d position) {
         if(animalsAt(position).size()>=2){
             List<Animal> parents = kWinners(position,2);
-            // tutaj trzeba dokodzić
+            if(parents.get(1).getEnergy()>=energyParameters.energyToFull()){
+                // to wciaz trzeba dokodzic
+                parents.get(0).changeEnergy(-energyParameters.energyToReproduce());
+                parents.get(1).changeEnergy(-energyParameters.energyToReproduce());
+            }
         }
     }
 
@@ -151,9 +168,11 @@ public abstract class AbstractWorldMap2 implements WorldMap2 {
     public int averageLifeSpan() {
         return animalsDead.stream().mapToInt(Animal::getLifeSpan).sum()/animalsDead.size();
     }
-
     @Override
     public int averageChildrenNumber() {
-        return 0;
+        return animalsAlive.values().stream()
+                .flatMap(List::stream)
+                .mapToInt(animal -> animal.getChildren().size())
+                .sum()/animalsAlive.size();
     }
 }

@@ -4,6 +4,7 @@ import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.maps.MoveValidator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -11,20 +12,17 @@ public class Animal implements WorldElement,Comparable<Animal> {
     private MapDirection orientation;
     private Vector2d position;
     private final Genome genome;
-    //te ponizej do konstruktora
     private int energy;
     private int lifeSpan;
-    private List<Animal> children;
+    private List<Animal> children = new ArrayList<>();
 
-    static final Vector2d DEFAULT_POSITION=new Vector2d(2,2);
-
-    public Animal(Genome genome,Vector2d position){
+    public Animal(Genome genome,Vector2d position,int energy){
+        Random rn = new Random();
         this.genome = genome;
         this.position=position;
-        this.orientation=MapDirection.NORTH; // to ma być losowe
-    }
-    public Animal(Genome genome){
-        this(genome,DEFAULT_POSITION);
+        this.orientation=MapDirection.values()[rn.nextInt()%4];
+        this.energy = energy;
+        this.lifeSpan = 0;
     }
     public MapDirection getOrientation() {
         return this.orientation;
@@ -52,21 +50,30 @@ public class Animal implements WorldElement,Comparable<Animal> {
         orientation = orientation.turn(genome.getCurrent());
     }
 
+    public void turnOpposite(){orientation=orientation.oppositeDirection();}
 
-    public void move(MoveValidator validator){
+
+    public void move(){
         turn(); // mozna to zlaczyc z nextIndex w sumie chyba ze bedziemy gdzies uzywac samego turn
         genome.nextIndex();
-        Vector2d newPosition = this.position.add(this.orientation.toUnitVector());
-        if (validator.canMoveTo(newPosition)) {
-            this.position = newPosition;
-        }
+        moveTo(this.position.add(this.orientation.toUnitVector()));
     }
-    public void eat(Grass grass){
-        /*
-        myslalem w ten sposob, ze moze np trawa by przetrzymywala ile ma energii
-         */
-        this.energy += grass.getEnergy();
+
+    public void moveTo(Vector2d position){
+        this.position = position;
     }
+
+    public void changeEnergy(int value){
+        this.energy += value;
+    }
+
+    public Genome getGenome(){
+        return genome;
+    }
+    public List<Animal> getChildren(){
+        return children;
+    }
+
 
     @Override
     public int compareTo(Animal other) {

@@ -1,9 +1,6 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.maps.GrassField;
-import agh.ics.oop.presenter.SimulationPresenter;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -14,18 +11,18 @@ public class SimulationApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        GrassField map = new GrassField(7, 1);
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
-        BorderPane viewRoot = loader.load();
-
-        SimulationPresenter presenter = loader.getController();
-        map.addObserver(presenter);
-        presenter.setWorldMap(map);
-
-        configureStage(primaryStage,viewRoot);
-        primaryStage.show();
+//        GrassField map = new GrassField(7, 1);
+//
+//        FXMLLoader loader = new FXMLLoader();
+//        loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
+//        BorderPane viewRoot = loader.load();
+//
+//        SimulationPresenter presenter = loader.getController();
+//        map.addObserver(presenter);
+//        presenter.setWorldMap(map);
+//
+//        configureStage(primaryStage,viewRoot);
+//        primaryStage.show();
 
     }
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {

@@ -43,7 +43,7 @@ public abstract class AbstractWorldMap implements WorldMap {
             Vector2d oldPosition = animal.getPosition();
             MapDirection oldOrientation = animal.getOrientation();
             this.animals.remove(animal.getPosition());
-            animal.move(this);
+            animal.move();
             this.animals.put(animal.getPosition(),animal);
 
             emitMessage("Animal on position " + animal.getPosition() +

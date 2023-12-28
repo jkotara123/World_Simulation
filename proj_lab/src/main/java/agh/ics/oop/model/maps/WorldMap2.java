@@ -5,6 +5,7 @@ import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Genome;
 import agh.ics.oop.model.elements.Grass;
 import agh.ics.oop.model.elements.WorldElement;
+import agh.ics.oop.model.exceptions.IllegalPositionException;
 
 import java.util.List;
 
