@@ -1,32 +1,36 @@
 package agh.ics.oop.model.util;
 
 import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.maps.Boundary;
 
 import java.util.*;
 
-public class RandomPositionsGenerator implements Iterable<Vector2d> {
-    private final ArrayList<Vector2d> points;
+public class RandomPositionsGenerator{
 
-    public RandomPositionsGenerator(int maxWidth, int maxHeight, int grassCount){
-        this(maxWidth,maxHeight,grassCount,new Random());
+    private final Random rand;
+    public RandomPositionsGenerator(){
+        this(new Random());
     }
-    public RandomPositionsGenerator(int maxWidth, int maxHeight, int grassCount, Random rand){
-        ArrayList<Vector2d> allPoints = new ArrayList<>((maxHeight+1)*(maxWidth+1));
-        for(int i=0;i<=maxHeight;i++){
-            for(int j=0;j<=maxWidth;j++){
-                allPoints.add(new Vector2d(i,j));
-            }
-        }
-        if(grassCount>allPoints.size()) grassCount = allPoints.size();
-        points =new ArrayList<>(grassCount);
-        Collections.shuffle(allPoints,rand);
-        for(int i=0;i<grassCount;i++){
-            points.add(allPoints.get(i));
-        }
+    public RandomPositionsGenerator(Random rand){
+        this.rand = rand;
     }
 
-    @Override
-    public Iterator<Vector2d> iterator() {
-        return this.points.iterator();
+    public ArrayList<Vector2d> kPositionsNoRepetition(List<Vector2d> positions, int positionAmount){
+        if(positionAmount>positions.size()) positionAmount = positions.size();
+        ArrayList<Vector2d> points = new ArrayList<>(positionAmount);
+        Collections.shuffle(positions,rand);
+        for(int i=0;i<positionAmount;i++){
+            points.add(positions.get(i));
+        }
+        return points;
     }
+
+    public ArrayList<Vector2d> kPositionsWithRepetition(List<Vector2d> positions, int positionAmount){
+        ArrayList<Vector2d> points = new ArrayList<>(positionAmount);
+        for(int i=0;i<positionAmount;i++){
+            points.add(positions.get(rand.nextInt()%positions.size()));
+        }
+        return points;
+    }
+
 }
