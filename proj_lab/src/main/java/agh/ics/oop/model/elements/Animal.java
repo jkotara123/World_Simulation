@@ -2,7 +2,9 @@ package agh.ics.oop.model.elements;
 
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.enums.MapDirection;
+import agh.ics.oop.model.maps.AbstractWorldMap;
 import agh.ics.oop.model.maps.MoveValidator;
+import agh.ics.oop.model.maps.WorldMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,17 +48,27 @@ public class Animal implements WorldElement,Comparable<Animal> {
         return this.position.equals(position);
     }
 
-    public void turn(){
+    private void turn(){
         orientation = orientation.turn(genome.getCurrent());
     }
 
-    public void turnOpposite(){orientation=orientation.oppositeDirection();}
+    public void turnAround(){
+        orientation=orientation.oppositeDirection();
+    }
 
-
-    public void move(){
-        turn(); // mozna to zlaczyc z nextIndex w sumie chyba ze bedziemy gdzies uzywac samego turn
+    public void move(WorldMap a){
+        turn();
+        if(a.canMove(this)){
+            moveTo(this.position.add(this.orientation.toUnitVector()));
+        }
+        else{
+        Vector2d newPosition= a.nextPosition(this);
+        this.moveTo(newPosition);
+        }
         genome.nextIndex();
-        moveTo(this.position.add(this.orientation.toUnitVector()));
+
+        changeEnergy(-a.getEnergyParameters().energyToMove());
+        getOlder();
     }
 
     public void moveTo(Vector2d position){
@@ -65,6 +77,9 @@ public class Animal implements WorldElement,Comparable<Animal> {
 
     public void changeEnergy(int value){
         this.energy += value;
+    }
+    private void getOlder(){
+        this.lifeSpan+=1;
     }
 
     public Genome getGenome(){

@@ -33,7 +33,7 @@ public class SimulationPresenter implements MapChangeListener {
         this.map=map;
     }
     private void drawMap(){
-        Boundary bounds = this.map.getCurrentBounds();
+        Boundary bounds = this.map.getMapBorders();
         int width = bounds.upperRight().x() - bounds.lowerLeft().x()+1;
         int height = bounds.upperRight().y() - bounds.lowerLeft().y()+1;
 
