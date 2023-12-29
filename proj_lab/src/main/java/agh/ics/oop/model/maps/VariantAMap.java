@@ -4,7 +4,7 @@ import agh.ics.oop.EnergyParameters;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.elements.Animal;
 
-public class VariantAMap extends AbstractWorldMap2 implements WorldMap2 {
+public class VariantAMap extends AbstractWorldMap implements WorldMap {
 
     public VariantAMap(Boundary mapBorders, EnergyParameters energyParameters) {
         super(mapBorders, energyParameters);

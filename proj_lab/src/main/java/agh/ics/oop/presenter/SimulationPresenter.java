@@ -33,7 +33,7 @@ public class SimulationPresenter implements MapChangeListener {
         this.map=map;
     }
     private void drawMap(){
-        Boundary bounds = this.map.getCurrentBounds();
+        Boundary bounds = this.map.getMapBorders();
         int width = bounds.upperRight().x() - bounds.lowerLeft().x()+1;
         int height = bounds.upperRight().y() - bounds.lowerLeft().y()+1;
 
@@ -85,8 +85,8 @@ public class SimulationPresenter implements MapChangeListener {
     }
     public void onSimulationStartClicked(){
 //        try {
-            ArrayList<Vector2d> animalPositions = new ArrayList<>(List.of(new Vector2d(3, 4),new Vector2d(1, 5)));
-            ArrayList<Genome> animalGenomes = new ArrayList<>(List.of(new Genome(List.of(0,0,0)),new Genome(List.of(1,2,3))));
+//            ArrayList<Vector2d> animalPositions = new ArrayList<>(List.of(new Vector2d(3, 4),new Vector2d(1, 5)));
+//            ArrayList<Genome> animalGenomes = new ArrayList<>(List.of(new Genome(List.of(0,0,0)),new Genome(List.of(1,2,3))));
 
 //            Simulation simulation = new Simulation(animalGenomes,animalPositions, this.map);
 //            SimulationEngine engine = new SimulationEngine(new ArrayList<>(List.of(simulation)), 4);

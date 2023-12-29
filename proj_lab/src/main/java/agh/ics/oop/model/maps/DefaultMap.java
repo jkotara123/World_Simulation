@@ -4,13 +4,13 @@ import agh.ics.oop.EnergyParameters;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.elements.Animal;
 
-public class DefaultMap extends AbstractWorldMap2 implements WorldMap2{
+public class DefaultMap extends AbstractWorldMap implements WorldMap {
     public DefaultMap(Boundary mapBorders, EnergyParameters energyParameters) {
         super(mapBorders, energyParameters);
     }
     public boolean leavesMap(Animal animal) { // zmieniłam że ogolnie sprawdza czy bedzie na mapie a nie tylko na osi y
         Vector2d newPosition = animal.getPosition().add(animal.getOrientation().toUnitVector());
-        return ;
+        return true;
     }
     @Override
     public void moveVariant(Animal animal) {

@@ -1,86 +1,155 @@
 package agh.ics.oop.model.maps;
 
-import agh.ics.oop.model.elements.Animal;
+import agh.ics.oop.EnergyParameters;
 import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.enums.MapDirection;
-import agh.ics.oop.model.exceptions.IllegalPositionException;
-import agh.ics.oop.model.observers.MapChangeListener;
+import agh.ics.oop.model.elements.Animal;
+import agh.ics.oop.model.elements.Grass;
 import agh.ics.oop.model.elements.WorldElement;
-import agh.ics.oop.model.util.MapVisualizer;
+import agh.ics.oop.model.util.RandomPositionsGenerator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import static java.lang.Math.min;
 
 public abstract class AbstractWorldMap implements WorldMap {
-    protected final Map<Vector2d, Animal> animals;
-    protected MapVisualizer map;
-    protected final ArrayList<MapChangeListener> observers;
-    protected final int mapID;
-    public AbstractWorldMap(int mapID){
-        this.animals=new HashMap<>();
-        this.map = new MapVisualizer(this);
-        this.observers = new ArrayList<>();
-        this.mapID=mapID;
+
+    protected final Map<Vector2d, List<Animal>> animalsAlive = new HashMap<>();
+
+    protected final Map<Vector2d, Grass> grasses = new HashMap<>();
+    protected final List<Vector2d> emptyPlacesOnEquator = new ArrayList<>();
+    protected final List<Vector2d> emptyPlacesNotOnEquator = new ArrayList<>();
+    protected final Boundary mapBorders;
+    protected final Boundary equator;
+    protected final EnergyParameters energyParameters;
+    protected final RandomPositionsGenerator randomPositionsGenerator = new RandomPositionsGenerator();
+
+    public AbstractWorldMap(Boundary mapBorders, EnergyParameters energyParameters) {
+        this.mapBorders = mapBorders;
+        this.equator = mapBorders; //TRZEBA ZROBIC
+        this.energyParameters = energyParameters;
     }
 
-    public int getMapID(){
-        return this.mapID;
+    @Override
+    public void placeAnimal(Animal animal){
+        animalsAlive.get(animal.getPosition()).add(animal);
     }
-    public void addObserver(MapChangeListener observer){
-        observers.add(observer);
+    @Override
+    public void removeAnimal(Animal animal) {
+        animalsAlive.get(animal.getPosition()).remove(animal);
     }
-    public void removeObserver(MapChangeListener observer){
-        observers.remove(observer);
+    @Override
+    public void placeGrass(Grass grass) {
+        grasses.put(grass.getPosition(),grass);
+        if(grass.isOnEquator(equator)) emptyPlacesOnEquator.remove(grass.getPosition());
+        else emptyPlacesNotOnEquator.remove(grass.getPosition());
     }
-    private void emitMessage(String message){
-        for(MapChangeListener observer : observers){
-            observer.mapChanged(this,message);
+    @Override
+    public void removeGrass(Grass grass){
+        if(grass.isOnEquator(equator)) emptyPlacesOnEquator.add(grass.getPosition());
+        else emptyPlacesNotOnEquator.add(grass.getPosition());
+
+        grasses.remove(grass.getPosition());
+    }
+
+    @Override
+    public void move(Animal animal) {
+        this.removeAnimal(animal);
+        this.moveVariant(animal);
+        this.placeAnimal(animal);
+    }
+
+
+    public abstract void moveVariant(Animal animal);
+
+    @Override
+    public List<Animal> animalsAt(Vector2d position) {
+        return animalsAlive.get(position);
+    }
+    @Override
+    public List<Animal> kWinners(Vector2d position, int k){
+        return animalsAt(position).stream()
+                .sorted()
+                .limit(k)
+                .toList();
+    }
+
+    @Override
+    public boolean isGrassAt(Vector2d position) {
+        return grasses.get(position) != null;
+    }
+
+    public void eatGrass(Grass grass) {
+        if (!animalsAt(grass.getPosition()).isEmpty()){
+            kWinners(grass.getPosition(),1).get(0).changeEnergy(energyParameters.energyFromEating());
+            removeGrass(grass);
         }
     }
-    public void move(Animal animal){
-        if(objectAt(animal.getPosition())==animal){
-            Vector2d oldPosition = animal.getPosition();
-            MapDirection oldOrientation = animal.getOrientation();
-            this.animals.remove(animal.getPosition());
-            animal.move();
-            this.animals.put(animal.getPosition(),animal);
 
-            emitMessage("Animal on position " + animal.getPosition() +
-                        " changed orientation from " + oldOrientation + " to " + animal.getOrientation());
-
-            if (!animal.getPosition().equals(oldPosition)){
-                emitMessage("Animal moved from " + oldPosition + " to " + animal.getPosition());
+    @Override
+    public void reproduce(Vector2d position) {
+        if(animalsAt(position).size()>=2){
+            List<Animal> parents = kWinners(position,2);
+            if(parents.get(1).getEnergy()>=energyParameters.energyToFull()){
+                // to wciaz trzeba dokodzic
+                parents.get(0).changeEnergy(-energyParameters.energyToReproduce());
+                parents.get(1).changeEnergy(-energyParameters.energyToReproduce());
             }
         }
     }
-    public void place(Animal animal) throws IllegalPositionException{
-        if(canMoveTo(animal.getPosition())){
-            animals.put(animal.getPosition(),animal);
-            emitMessage("Zwierzak dodany na pozycje "+animal.getPosition());
+
+    @Override
+    public List<WorldElement> getElements() {
+        List<WorldElement> elements = new ArrayList<>(grasses.values());
+        for(List<Animal> animalList : animalsAlive.values()){
+            elements.addAll(animalList);
         }
-        else{
-            throw new IllegalPositionException(animal.getPosition());
+        return elements;
+    }
+    public Boundary getMapBorders(){
+        return mapBorders;
+    }
+
+    @Override
+    public int countGrass() {
+        return grasses.size();
+    }
+
+    @Override
+    public List<Vector2d> emptyPositions() {
+        List<Vector2d> places = new ArrayList<>(emptyPlacesOnEquator);
+        places.addAll(emptyPlacesNotOnEquator);
+        return places;
+    }
+    public Map<Vector2d,Grass> getGrasses(){
+        return grasses;
+    }
+
+    @Override
+    public void growGrass(int grassAmount){
+        int maxGrass = min(grassAmount,emptyPlacesNotOnEquator.size()+emptyPlacesOnEquator.size());
+        Random rn = new Random();
+        int newEquatorGrassAmount = 0;
+        int newNoEquatorGrassAmount = 0;
+        for(int i = 0;i<maxGrass;i++){
+            if (rn.nextInt(5)<4){
+                newEquatorGrassAmount+=1;
+            }
+            else newNoEquatorGrassAmount+=1;
+        }
+        if (emptyPlacesNotOnEquator.size()<newNoEquatorGrassAmount){
+            newEquatorGrassAmount+=newNoEquatorGrassAmount-emptyPlacesNotOnEquator.size();
+            newNoEquatorGrassAmount = emptyPlacesNotOnEquator.size();
+        }
+        else if (emptyPlacesOnEquator.size()<newEquatorGrassAmount){
+            newNoEquatorGrassAmount += newEquatorGrassAmount-emptyPlacesOnEquator.size();
+            newEquatorGrassAmount = emptyPlacesOnEquator.size();
+        }
+        for (Vector2d position: randomPositionsGenerator.kPositionsNoRepetition(emptyPlacesOnEquator,newEquatorGrassAmount)){
+            placeGrass(new Grass(position));
+        }
+        for (Vector2d position: randomPositionsGenerator.kPositionsNoRepetition(emptyPlacesNotOnEquator,newNoEquatorGrassAmount)){
+            placeGrass(new Grass(position));
         }
     }
-    public boolean isOccupied(Vector2d position) {
-        return animals.containsKey(position);
-    }
-    public WorldElement objectAt(Vector2d position) {
-        return animals.get(position);
-    }
-    public boolean canMoveTo(Vector2d position) {
-        return !isOccupied(position);
-    }
-    @Override
-    public ArrayList<WorldElement> getElements() {
-        return new ArrayList<>(animals.values());
-    }
-    @Override
-    public abstract Boundary getCurrentBounds();
-    @Override
-    public String toString() {
-        Boundary bounds = getCurrentBounds();
-        return map.draw(bounds.lowerLeft(), bounds.upperRight());
-    }
+
 }
