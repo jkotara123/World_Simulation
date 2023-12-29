@@ -10,7 +10,6 @@ import agh.ics.oop.model.util.RandomPositionsGenerator;
 import java.util.*;
 
 import static java.lang.Math.min;
-
 public abstract class AbstractWorldMap implements WorldMap {
 
     protected final Map<Vector2d, List<Animal>> animalsAlive = new HashMap<>();
@@ -25,10 +24,41 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     public AbstractWorldMap(Boundary mapBorders, EnergyParameters energyParameters) {
         this.mapBorders = mapBorders;
-        this.equator = mapBorders; //TRZEBA ZROBIC
         this.energyParameters = energyParameters;
+
+        int height = mapBorders.upperRight().y()-mapBorders.lowerLeft().y()+1;
+        int lowEq = (height%2==0) ? height/2-1 - height/5-1 : height/2 - height/5-1;
+        int highEq = height/2 + height/5-1;
+        this.equator = new Boundary(new Vector2d(0,lowEq),new Vector2d(mapBorders.upperRight().x(),highEq));
+
+        this.emptyPlacesOnEquator = this.equator.allPositions();
+        List<Vector2d> belowEq = new Boundary(mapBorders.lowerLeft(),new Vector2d(equator.upperRight().x(), equator.lowerLeft().y()-1)).allPositions();
+        List<Vector2d> aboveEq = new Boundary(new Vector2d(mapBorders.lowerLeft().x(),mapBorders.upperRight().y()+1),mapBorders.upperRight()).allPositions();
+        emptyPlacesNotOnEquator = new ArrayList<>(belowEq);
+        emptyPlacesNotOnEquator.addAll(aboveEq);
+    }
+  
+    public Boundary getMapBorders(){
+        return mapBorders;
+    }
+  
+    public Map<Vector2d,Grass> getGrasses(){
+        return grasses;
+    }
+  
+      @Override
+    public List<WorldElement> getElements() {
+        List<WorldElement> elements = new ArrayList<>(grasses.values());
+        for(List<Animal> animalList : animalsAlive.values()){
+            elements.addAll(animalList);
+        }
+        return elements;
     }
 
+    public EnergyParameters getEnergyParameters() {
+        return energyParameters;
+    }
+  
     @Override
     public void placeAnimal(Animal animal){
         animalsAlive.get(animal.getPosition()).add(animal);
@@ -47,19 +77,15 @@ public abstract class AbstractWorldMap implements WorldMap {
     public void removeGrass(Grass grass){
         if(grass.isOnEquator(equator)) emptyPlacesOnEquator.add(grass.getPosition());
         else emptyPlacesNotOnEquator.add(grass.getPosition());
-
         grasses.remove(grass.getPosition());
     }
 
     @Override
     public void move(Animal animal) {
         this.removeAnimal(animal);
-        this.moveVariant(animal);
+        animal.move(this);
         this.placeAnimal(animal);
     }
-
-
-    public abstract void moveVariant(Animal animal);
 
     @Override
     public List<Animal> animalsAt(Vector2d position) {
@@ -71,11 +97,6 @@ public abstract class AbstractWorldMap implements WorldMap {
                 .sorted()
                 .limit(k)
                 .toList();
-    }
-
-    @Override
-    public boolean isGrassAt(Vector2d position) {
-        return grasses.get(position) != null;
     }
 
     public void eatGrass(Grass grass) {
@@ -98,18 +119,6 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     @Override
-    public List<WorldElement> getElements() {
-        List<WorldElement> elements = new ArrayList<>(grasses.values());
-        for(List<Animal> animalList : animalsAlive.values()){
-            elements.addAll(animalList);
-        }
-        return elements;
-    }
-    public Boundary getMapBorders(){
-        return mapBorders;
-    }
-
-    @Override
     public int countGrass() {
         return grasses.size();
     }
@@ -119,9 +128,6 @@ public abstract class AbstractWorldMap implements WorldMap {
         List<Vector2d> places = new ArrayList<>(emptyPlacesOnEquator);
         places.addAll(emptyPlacesNotOnEquator);
         return places;
-    }
-    public Map<Vector2d,Grass> getGrasses(){
-        return grasses;
     }
 
     @Override
@@ -152,4 +158,9 @@ public abstract class AbstractWorldMap implements WorldMap {
         }
     }
 
+    public boolean canMove(Animal animal){
+        Vector2d newPosition = animal.getPosition().add(animal.getOrientation().toUnitVector());
+        return (newPosition.precedes(mapBorders.upperRight()) && newPosition.follows(mapBorders.lowerLeft()));
+    }
+    public abstract Vector2d nextPosition(Animal animal);
 }
