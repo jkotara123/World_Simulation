@@ -16,6 +16,8 @@ public class Simulation implements Runnable{
     protected final Map<Genome,List<Animal>> genomeList = new HashMap<>();
     private final WorldMap map;
     private final SimulationParameters simulationParameters;
+    private final RandomPositionsGenerator randomPositionsGenerator = new RandomPositionsGenerator();
+
     public Simulation(SimulationParameters simulationParameters){
         Boundary boundary = new Boundary(new Vector2d(0,0), new Vector2d(simulationParameters.width()-1, simulationParameters.height()-1 ));
         this.simulationParameters = simulationParameters;
@@ -25,18 +27,8 @@ public class Simulation implements Runnable{
         else{
             this.map = new DefaultMap(boundary,simulationParameters.energyParameters());
         }
-        RandomPositionsGenerator randomPositionsGenerator = new RandomPositionsGenerator();
-        ArrayList<Vector2d> animalPositions = randomPositionsGenerator.kPositionsWithRepetition
-                (boundary.allPositions(), simulationParameters.startingAnimalAmount());
 
-
-        for(Vector2d position: animalPositions) { //rozkladanie zwierzakow na mapie
-            Animal animal = new Animal(new Genome(simulationParameters.genomeLength()),
-                                        position,
-                                        simulationParameters.energyParameters().startingEnergy());
-            this.map.placeAnimal(animal);
-            animalsAlive.add(animal);
-        }
+        placeAnimals();
 
         ArrayList<Vector2d> grassPositions = randomPositionsGenerator.kPositionsNoRepetition
                 (boundary.allPositions(), simulationParameters.startingGrassAmount());
@@ -45,6 +37,20 @@ public class Simulation implements Runnable{
             Grass grass = new Grass(position);
             this.map.placeGrass(grass);
         }
+    }
+
+    public void placeAnimals(){
+        ArrayList<Vector2d> animalPositions = randomPositionsGenerator.kPositionsWithRepetition
+                (map.getMapBorders().allPositions(), simulationParameters.startingAnimalAmount());
+
+        for(Vector2d position: animalPositions) { //rozkladanie zwierzakow na mapie
+            Animal animal = new Animal(new Genome(simulationParameters.genomeLength()),
+                    position,
+                    simulationParameters.energyParameters().startingEnergy());
+            this.map.placeAnimal(animal);
+            animalsAlive.add(animal);
+        }
+
     }
     public Animal getAnimal(int i) {
         assert i>=0 && i<animalsAlive.size();
@@ -62,11 +68,7 @@ public class Simulation implements Runnable{
     }
 
     public int averageEnergy() {
-        int sum = 0;
-        for(List<Animal> animalList : animalsAlive.values()){
-            sum += animalList.stream().mapToInt(Animal::getEnergy).sum();
-        }
-        return sum/countAnimals();
+        return animalsAlive.stream().mapToInt(Animal::getEnergy).sum()/animalsAlive.size();
     }
 
 
@@ -75,22 +77,30 @@ public class Simulation implements Runnable{
     }
 
     public int averageChildrenNumber() {
-        return animalsAlive.values().stream()
-                .flatMap(List::stream)
+        return animalsAlive.stream()
                 .mapToInt(animal -> animal.getChildren().size())
                 .sum()/animalsAlive.size();
     }
     @Override
     public void run(){
         //usuniecie martwych zwierzakow
+        animalsAlive.stream()
+                .filter(animal -> animal.getEnergy() <= 0)
+                .forEach(this::removeDeadAnimal);
 
         //ruszanie sie zwierzakow
+        animalsAlive.forEach(map::move);
 
         //jedzenie roslin
+        map.getGrasses().values().forEach(map::eatGrass);
 
         //rozmnazanie sie najedzonych zwierzakow
+        map.getMapBorders().allPositions().forEach(map::reproduce); // do sprawdzenia
 
         //nowe rosliny
+        map.growGrass(simulationParameters.dailyGrassGrowth());
+
+
         for(int i=0;i < 10;i++){ // na razie daje tu losowa liczbe jako liczbe wykonan
             for (Animal animal: animalsAlive){
                 this.map.move(animal);

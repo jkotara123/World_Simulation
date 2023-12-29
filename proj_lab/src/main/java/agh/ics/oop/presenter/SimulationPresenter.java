@@ -85,8 +85,8 @@ public class SimulationPresenter implements MapChangeListener {
     }
     public void onSimulationStartClicked(){
 //        try {
-            ArrayList<Vector2d> animalPositions = new ArrayList<>(List.of(new Vector2d(3, 4),new Vector2d(1, 5)));
-            ArrayList<Genome> animalGenomes = new ArrayList<>(List.of(new Genome(List.of(0,0,0)),new Genome(List.of(1,2,3))));
+//            ArrayList<Vector2d> animalPositions = new ArrayList<>(List.of(new Vector2d(3, 4),new Vector2d(1, 5)));
+//            ArrayList<Genome> animalGenomes = new ArrayList<>(List.of(new Genome(List.of(0,0,0)),new Genome(List.of(1,2,3))));
 
 //            Simulation simulation = new Simulation(animalGenomes,animalPositions, this.map);
 //            SimulationEngine engine = new SimulationEngine(new ArrayList<>(List.of(simulation)), 4);
