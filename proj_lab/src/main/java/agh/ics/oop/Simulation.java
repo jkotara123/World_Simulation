@@ -4,7 +4,6 @@ import agh.ics.oop.model.*;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Genome;
 import agh.ics.oop.model.elements.Grass;
-import agh.ics.oop.model.exceptions.IllegalPositionException;
 import agh.ics.oop.model.maps.*;
 import agh.ics.oop.model.util.RandomPositionsGenerator;
 
@@ -15,7 +14,7 @@ public class Simulation implements Runnable{
     private final ArrayList<Animal> animalsAlive = new ArrayList<>(0);
     protected final List<Animal> animalsDead = new ArrayList<>();
     protected final Map<Genome,List<Animal>> genomeList = new HashMap<>();
-    private final WorldMap2 map;
+    private final WorldMap map;
     private final SimulationParameters simulationParameters;
     public Simulation(SimulationParameters simulationParameters){
         Boundary boundary = new Boundary(new Vector2d(0,0), new Vector2d(simulationParameters.width()-1, simulationParameters.height()-1 ));
