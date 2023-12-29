@@ -8,13 +8,19 @@ public class DefaultMap extends AbstractWorldMap2 implements WorldMap2{
     public DefaultMap(Boundary mapBorders, EnergyParameters energyParameters) {
         super(mapBorders, energyParameters);
     }
-
+    public boolean leavesMap(Animal animal) { // zmieniłam że ogolnie sprawdza czy bedzie na mapie a nie tylko na osi y
+        Vector2d newPosition = animal.getPosition().add(animal.getOrientation().toUnitVector());
+        return ;
+    }
     @Override
     public void moveVariant(Animal animal) {
+//        if super.leavesMap(animal){
+//            animal.turnOpposite();
+//        }
         animal.move();
         animal.changeEnergy(-energyParameters.energyToMove());
         if (animal.getPosition().y()>mapBorders.upperRight().y() || animal.getPosition().y()<mapBorders.lowerLeft().y()){
-            animal.turnOpposite();
+
             animal.moveTo(animal.getPosition().add((animal.getOrientation().toUnitVector())));
         }
         else if (animal.getPosition().x()>mapBorders.upperRight().x()){

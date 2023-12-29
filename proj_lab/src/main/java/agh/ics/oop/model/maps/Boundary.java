@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record Boundary(Vector2d lowerLeft, Vector2d upperRight) {
+    //List<VecallPositions =
     public List<Vector2d> allPositions(){
         List<Vector2d> positions = new ArrayList<>();
         for (int x = lowerLeft.x(); x < upperRight.x()+1; x++) {
