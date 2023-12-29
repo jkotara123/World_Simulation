@@ -15,8 +15,8 @@ public abstract class AbstractWorldMap implements WorldMap {
     protected final Map<Vector2d, List<Animal>> animalsAlive = new HashMap<>();
 
     protected final Map<Vector2d, Grass> grasses = new HashMap<>();
-    protected final List<Vector2d> emptyPlacesOnEquator = new ArrayList<>();
-    protected final List<Vector2d> emptyPlacesNotOnEquator = new ArrayList<>();
+    protected final List<Vector2d> emptyPlacesOnEquator;
+    protected final List<Vector2d> emptyPlacesNotOnEquator;
     protected final Boundary mapBorders;
     protected final Boundary equator;
     protected final EnergyParameters energyParameters;
