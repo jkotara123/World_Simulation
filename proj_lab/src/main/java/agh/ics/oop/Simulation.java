@@ -1,9 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
-import agh.ics.oop.model.elements.Animal;
-import agh.ics.oop.model.elements.Genome;
-import agh.ics.oop.model.elements.Grass;
+import agh.ics.oop.model.elements.*;
 import agh.ics.oop.model.maps.*;
 import agh.ics.oop.model.util.RandomPositionsGenerator;
 
@@ -28,7 +26,7 @@ public class Simulation implements Runnable{
             this.map = new DefaultMap(boundary,simulationParameters.energyParameters());
         }
 
-        placeAnimals();
+        placeAnimals(simulationParameters.mutationVariant());
 
         ArrayList<Vector2d> grassPositions = randomPositionsGenerator.kPositionsNoRepetition
                 (boundary.allPositions(), simulationParameters.startingGrassAmount());
@@ -39,12 +37,13 @@ public class Simulation implements Runnable{
         }
     }
 
-    public void placeAnimals(){
+    public void placeAnimals(int variant){
         ArrayList<Vector2d> animalPositions = randomPositionsGenerator.kPositionsWithRepetition
                 (map.getMapBorders().allPositions(), simulationParameters.startingAnimalAmount());
 
         for(Vector2d position: animalPositions) { //rozkladanie zwierzakow na mapie
-            Animal animal = new Animal(new Genome(simulationParameters.genomeLength()),
+            // IF ELSE WARIANT
+            Animal animal = new Animal(new DefaultGenome(simulationParameters.genomeLength()),
                     position,
                     simulationParameters.energyParameters().startingEnergy());
             this.map.placeAnimal(animal);
@@ -61,6 +60,18 @@ public class Simulation implements Runnable{
         this.animalsAlive.remove(animal);
         map.removeAnimal(animal);
         animalsDead.add(animal);
+    }
+    public void reproduce(Vector2d position){
+        if(map.animalsAt(position).size()>=2){
+            List<Animal> parents = map.kWinners(position,2);
+            if(parents.get(1).getEnergy()>=simulationParameters.energyParameters().energyToFull()){
+                Animal child = new Animal(parents.get(0),parents.get(1),simulationParameters.energyParameters().energyToReproduce(),simulationParameters.mutationVariant());
+                map.placeAnimal(child);
+                animalsAlive.add(child);
+                parents.get(0).changeEnergy(-simulationParameters.energyParameters().energyToReproduce());
+                parents.get(1).changeEnergy(-simulationParameters.energyParameters().energyToReproduce());
+            }
+        }
     }
 
     public Genome mostPopularGenome() {
@@ -95,7 +106,7 @@ public class Simulation implements Runnable{
         map.getGrasses().values().forEach(map::eatGrass);
 
         //rozmnazanie sie najedzonych zwierzakow
-        map.getMapBorders().allPositions().forEach(map::reproduce); // do sprawdzenia
+        map.getMapBorders().allPositions().forEach(this::reproduce); // do sprawdzenia
 
         //nowe rosliny
         map.growGrass(simulationParameters.dailyGrassGrowth());

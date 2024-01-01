@@ -2,8 +2,6 @@ package agh.ics.oop.model.elements;
 
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.enums.MapDirection;
-import agh.ics.oop.model.maps.AbstractWorldMap;
-import agh.ics.oop.model.maps.MoveValidator;
 import agh.ics.oop.model.maps.WorldMap;
 
 import java.util.ArrayList;
@@ -18,13 +16,16 @@ public class Animal implements WorldElement,Comparable<Animal> {
     private int lifeSpan;
     private List<Animal> children = new ArrayList<>();
 
-    public Animal(Genome genome,Vector2d position,int energy){
+    public Animal(Genome genome, Vector2d position, int energy){
         Random rn = new Random();
         this.genome = genome;
         this.position=position;
         this.orientation=MapDirection.values()[rn.nextInt()%4];
         this.energy = energy;
         this.lifeSpan = 0;
+    }
+    public Animal(Animal animal1, Animal animal2, int energyToReproduce, int genomeVariant){
+        this(new DefaultGenome(animal1.genome,animal2.genome,animal1.energy,animal2.energy), animal1.getPosition(),energyToReproduce*2 );
     }
     public MapDirection getOrientation() {
         return this.orientation;

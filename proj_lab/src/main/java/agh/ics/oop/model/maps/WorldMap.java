@@ -24,8 +24,6 @@ public interface WorldMap extends MoveValidator {
     List<Animal> kWinners(Vector2d position, int k); // zwraca liste k-najsilniejszych zwierzakow
     void eatGrass(Grass grass); // wyznacza zwierzaka ktory zjada trawe, usuwa trawe,
                                      // zwierzak ma wlasna funkcje do zjadania
-    void reproduce(Vector2d position);  // wyznacza dwa zwierzaki ktore sie rozmnazaja, dodaje nowego zwierzaka,
-                                        // starym zmniejsza energie (funkcja w Genome - createNewGenome, dwa warianty)
     int countGrass();    // liczba aktualnie zyjacych trawek
     List<Vector2d> emptyPositions();    // lista aktualnie pustych pozycji
     void growGrass(int grassAmount); //kladzie na mapie grassAmount traw
