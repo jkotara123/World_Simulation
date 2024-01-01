@@ -1,10 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
-import agh.ics.oop.model.elements.Animal;
-import agh.ics.oop.model.elements.AbstractGenome;
-import agh.ics.oop.model.elements.DefaultGenome;
-import agh.ics.oop.model.elements.Grass;
+import agh.ics.oop.model.elements.*;
 import agh.ics.oop.model.maps.*;
 import agh.ics.oop.model.util.RandomPositionsGenerator;
 
@@ -14,7 +11,7 @@ import java.util.*;
 public class Simulation implements Runnable{
     private final ArrayList<Animal> animalsAlive = new ArrayList<>(0);
     protected final List<Animal> animalsDead = new ArrayList<>();
-    protected final Map<AbstractGenome,List<Animal>> genomeList = new HashMap<>();
+    protected final Map<Genome,List<Animal>> genomeList = new HashMap<>();
     private final WorldMap map;
     private final SimulationParameters simulationParameters;
     private final RandomPositionsGenerator randomPositionsGenerator = new RandomPositionsGenerator();
@@ -45,6 +42,7 @@ public class Simulation implements Runnable{
                 (map.getMapBorders().allPositions(), simulationParameters.startingAnimalAmount());
 
         for(Vector2d position: animalPositions) { //rozkladanie zwierzakow na mapie
+            // IF ELSE WARIANT
             Animal animal = new Animal(new DefaultGenome(simulationParameters.genomeLength()),
                     position,
                     simulationParameters.energyParameters().startingEnergy());
@@ -67,7 +65,7 @@ public class Simulation implements Runnable{
         if(map.animalsAt(position).size()>=2){
             List<Animal> parents = map.kWinners(position,2);
             if(parents.get(1).getEnergy()>=simulationParameters.energyParameters().energyToFull()){
-                Animal child = new Animal(parents.get(0),parents.get(1),2*simulationParameters.energyParameters().energyToReproduce(),simulationParameters.mutationVariant());
+                Animal child = new Animal(parents.get(0),parents.get(1),simulationParameters.energyParameters().energyToReproduce(),simulationParameters.mutationVariant());
                 map.placeAnimal(child);
                 animalsAlive.add(child);
                 parents.get(0).changeEnergy(-simulationParameters.energyParameters().energyToReproduce());
@@ -76,7 +74,7 @@ public class Simulation implements Runnable{
         }
     }
 
-    public AbstractGenome mostPopularGenome() {
+    public Genome mostPopularGenome() {
         return null;
     }
 
