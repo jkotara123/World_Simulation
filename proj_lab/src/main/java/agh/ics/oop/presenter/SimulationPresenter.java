@@ -1,10 +1,6 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.Simulation;
-import agh.ics.oop.SimulationEngine;
-import agh.ics.oop.model.elements.Genome;
 import agh.ics.oop.model.maps.Boundary;
-import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.elements.WorldElement;
 import agh.ics.oop.model.maps.WorldMap;
@@ -16,9 +12,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class SimulationPresenter implements MapChangeListener {

@@ -107,18 +107,6 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     @Override
-    public void reproduce(Vector2d position) {
-        if(animalsAt(position).size()>=2){
-            List<Animal> parents = kWinners(position,2);
-            if(parents.get(1).getEnergy()>=energyParameters.energyToFull()){
-                // to wciaz trzeba dokodzic
-                parents.get(0).changeEnergy(-energyParameters.energyToReproduce());
-                parents.get(1).changeEnergy(-energyParameters.energyToReproduce());
-            }
-        }
-    }
-
-    @Override
     public int countGrass() {
         return grasses.size();
     }
