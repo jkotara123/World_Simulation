@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="agh.ics.oop.presenter.ConfigurationPresenter"
+            minHeight="400.0" minWidth="600.0" stylesheets="style.css">
+
+    <top>
+        <HBox fx:id="configTop">
+            <Label styleClass="headerLabel"  text="Wprowadź konfiguracje"  />
+        </HBox>
+    </top>
+    <center>
+        <VBox fx:id="configCenter">
+            <Label styleClass="moveLabel" text="Wybierz wariant mapy:"  />
+            <HBox>
+                <Button text="Kula Ziemska"/>
+                <Button text="Piekielny Portal"/>
+            </HBox>
+            <Label styleClass="moveLabel" text="Wybierz wariant mutacji:"  />
+            <HBox>
+                <Button text="Pełna Losowość"/>
+                <Button text = "Lekka Korekta"/>
+            </HBox>
+            <HBox>
+                <VBox>
+                    <TextField fx:id="heightTextField" promptText="map height"/>
+                    <TextField fx:id="widthTextField" promptText="map width"/>
+                    <TextField fx:id="startingGrassAmountTextField" promptText="starting grass amount"/>
+                    <TextField fx:id="startingAnimalAmountTextField" promptText="starting animal amount"/>
+                    <TextField fx:id="genomeLengthTextField" promptText="genome length"/>
+                    <TextField fx:id="dailyGrassGrowthTextField" promptText="daily grass growth amount"/>
+                </VBox>
+                <VBox>
+                    <TextField fx:id="minChildrenMutationsTextField" promptText="minimal amount of genes mutating"/>
+                    <TextField fx:id="maxChildrenMutationsTextField" promptText="maximum amount of genes mutating"/>
+                    <TextField fx:id="energyFromEatingTextField" promptText="energy gained from eating"/>
+                    <TextField fx:id="energyToReproduceTextField" promptText="energy lost from reproducing"/>
+                    <TextField fx:id="energyToMoveTextField" promptText="energy lost from moving"/>
+                    <TextField fx:id="startingEnergyTextField" promptText="starting energy amount"/>
+                    <TextField fx:id="energyToFullTextField" promptText="energy needed for an animal to be considered full"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
+    <bottom>
+        <VBox fx:id="configBottom">
+            <Label fx:id="errorMessage" styleClass="moveLabel"/>
+            <HBox>
+                <Button text="Confirm" onAction="#onConfirmButtonClicked"/>
+            </HBox>
+        </VBox>
+    </bottom>
+
+</BorderPane>

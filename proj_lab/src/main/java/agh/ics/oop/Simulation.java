@@ -8,6 +8,7 @@ import agh.ics.oop.model.util.RandomPositionsGenerator;
 import agh.ics.oop.presenter.SimulationPresenter;
 import javafx.fxml.FXMLLoader;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 
@@ -20,7 +21,7 @@ public class Simulation implements Runnable{
     private final RandomPositionsGenerator randomPositionsGenerator = new RandomPositionsGenerator();
     private boolean isRunning = false;
 
-    public Simulation(SimulationParameters simulationParameters){
+    public Simulation(SimulationParameters simulationParameters) throws FileNotFoundException {
         this.simulationParameters = simulationParameters;
         map = simulationParameters.getMap();
 
