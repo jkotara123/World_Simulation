@@ -1,5 +1,9 @@
 package agh.ics.oop.presenter;
 
+import agh.ics.oop.EnergyParameters;
+import agh.ics.oop.Simulation;
+import agh.ics.oop.SimulationEngine;
+import agh.ics.oop.SimulationParameters;
 import agh.ics.oop.model.maps.Boundary;
 import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.elements.WorldElement;
@@ -7,23 +11,35 @@ import agh.ics.oop.model.maps.WorldMap;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SimulationPresenter implements MapChangeListener {
-    private WorldMap map;
-    @FXML
-    private TextField getParameters;
-    @FXML
-    private Label moveLabel;
+
+
+    public TextField heightTextField;
+    public TextField widthTextField;
+    public Label errorMessage;
+    public VBox configBottom;
+    public HBox configTop;
+    public VBox configCenter;
+    public VBox simBottom;
     @FXML
     private GridPane mapGrid;
-    public void setWorldMap(WorldMap map){
-        this.map=map;
+    private WorldMap map;
+    private Simulation simulation;
+
+    private void setMap(WorldMap map){
+        this.map = map;
+    }
+    private void setSimulation(Simulation simulation){
+        this.simulation = simulation;
     }
     private void drawMap(){
         Boundary bounds = this.map.getMapBorders();
@@ -39,7 +55,7 @@ public class SimulationPresenter implements MapChangeListener {
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             this.drawMap();
-            this.moveLabel.setText(message);
+            System.out.println(message);
 
         });
     }
@@ -76,17 +92,47 @@ public class SimulationPresenter implements MapChangeListener {
             GridPane.setHalignment(label, HPos.CENTER);
         }
     }
-    public void onSimulationStartClicked(){
-//        try {
-//            ArrayList<Vector2d> animalPositions = new ArrayList<>(List.of(new Vector2d(3, 4),new Vector2d(1, 5)));
-//            ArrayList<Genome> animalGenomes = new ArrayList<>(List.of(new Genome(List.of(0,0,0)),new Genome(List.of(1,2,3))));
 
-//            Simulation simulation = new Simulation(animalGenomes,animalPositions, this.map);
-//            SimulationEngine engine = new SimulationEngine(new ArrayList<>(List.of(simulation)), 4);
-//            engine.runAsync();
-//        }
-//        catch (IllegalArgumentException | InterruptedException e){
-//            System.out.println(e.getMessage());
-//        }
+    public void onSimulationStopButtonClicked(){
+        simulation.stopRunning();
+    }
+    public void onSimulationResumeButtonClicked(){
+        simulation.startRunning();
+    }
+    public void onSimulationStartClicked(){
+        String[] widthString = widthTextField.getText().split(" ");
+        int width = Integer.parseInt(widthString[0]);
+        String[] heightString = heightTextField.getText().split(" ");
+        int height = Integer.parseInt(heightString[0]);
+
+        if(width<=0 || height<=0){
+            errorMessage.setText("Nieprawidłowe dane");
+        }
+        else {
+            EnergyParameters energyParameters = new EnergyParameters(10, 5, 1, 20, 15);
+            SimulationParameters simulationParameters = new SimulationParameters(width, height,
+                    0, 0, 0, 0,
+                    5, 10, 3,
+                    2, 0, 0, energyParameters);
+            configCenter.setVisible(false);
+            configTop.setVisible(false);
+            configBottom.setVisible(false);
+            simBottom.setVisible(true);
+            mapGrid.setVisible(true);
+
+
+            Simulation simulation = new Simulation(simulationParameters);
+
+            this.setSimulation(simulation);
+            this.setMap(simulation.getMap());
+            map.addObserver(this);
+
+            try {
+                SimulationEngine engine = new SimulationEngine(new ArrayList<>(List.of(simulation)), 4);
+                engine.runAsync();
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 }

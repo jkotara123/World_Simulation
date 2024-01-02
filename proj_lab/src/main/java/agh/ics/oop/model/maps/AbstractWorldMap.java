@@ -5,20 +5,25 @@ import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Grass;
 import agh.ics.oop.model.elements.WorldElement;
+import agh.ics.oop.model.enums.MapDirection;
+import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.util.RandomPositionsGenerator;
 
 import java.util.*;
 
 import static java.lang.Math.min;
 public abstract class AbstractWorldMap implements WorldMap {
+    private final List<MapChangeListener> observers = new ArrayList<>();
 
     protected final Map<Vector2d, List<Animal>> animalsAlive = new HashMap<>();
-
     protected final Map<Vector2d, Grass> grasses = new HashMap<>();
+
     protected final List<Vector2d> emptyPlacesOnEquator;
     protected final List<Vector2d> emptyPlacesNotOnEquator;
+
     protected final Boundary mapBorders;
     protected final Boundary equator;
+
     protected final EnergyParameters energyParameters;
     protected final RandomPositionsGenerator randomPositionsGenerator = new RandomPositionsGenerator();
 
@@ -33,9 +38,10 @@ public abstract class AbstractWorldMap implements WorldMap {
 
         this.emptyPlacesOnEquator = this.equator.allPositions();
         List<Vector2d> belowEq = new Boundary(mapBorders.lowerLeft(),new Vector2d(equator.upperRight().x(), equator.lowerLeft().y()-1)).allPositions();
-        List<Vector2d> aboveEq = new Boundary(new Vector2d(mapBorders.lowerLeft().x(),mapBorders.upperRight().y()+1),mapBorders.upperRight()).allPositions();
+        List<Vector2d> aboveEq = new Boundary(new Vector2d(equator.lowerLeft().x(),equator.upperRight().y()+1),mapBorders.upperRight()).allPositions();
         emptyPlacesNotOnEquator = new ArrayList<>(belowEq);
         emptyPlacesNotOnEquator.addAll(aboveEq);
+
     }
   
     public Boundary getMapBorders(){
@@ -58,9 +64,24 @@ public abstract class AbstractWorldMap implements WorldMap {
     public EnergyParameters getEnergyParameters() {
         return energyParameters;
     }
+
+    public void addObserver(MapChangeListener observer){
+        observers.add(observer);
+    }
+
+    public void removeObserver(MapChangeListener observer){
+        observers.remove(observer);
+    }
+
+    private void mapChanged(String message){
+        for(MapChangeListener observer: observers){
+            observer.mapChanged(this,message);
+        }
+    }
   
     @Override
     public void placeAnimal(Animal animal){
+        animalsAlive.computeIfAbsent(animal.getPosition(),position->new ArrayList<>());
         animalsAlive.get(animal.getPosition()).add(animal);
     }
     @Override
@@ -82,13 +103,25 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     @Override
     public void move(Animal animal) {
+        Vector2d oldPosition = animal.getPosition();
+        MapDirection oldOrientation = animal.getOrientation();
+
         this.removeAnimal(animal);
         animal.move(this);
         this.placeAnimal(animal);
+
+        if (!animal.getPosition().equals(oldPosition)){
+            mapChanged("Animal moved from " + oldPosition + " to " + animal.getPosition());
+        }
+        if (!animal.getOrientation().equals(oldOrientation)){
+            mapChanged("Animal on position " + animal.getPosition() +
+                    " changed orientation from " + oldOrientation + " to " + animal.getOrientation());
+        }
     }
 
     @Override
     public List<Animal> animalsAt(Vector2d position) {
+        animalsAlive.computeIfAbsent(position,k->new ArrayList<>());
         return animalsAlive.get(position);
     }
     @Override
@@ -99,10 +132,11 @@ public abstract class AbstractWorldMap implements WorldMap {
                 .toList();
     }
 
-    public void eatGrass(Grass grass) {
-        if (!animalsAt(grass.getPosition()).isEmpty()){
-            kWinners(grass.getPosition(),1).get(0).changeEnergy(energyParameters.energyFromEating());
-            removeGrass(grass);
+
+    public void eatGrass(Animal animal) {
+        if (grasses.containsKey(animal.getPosition())){
+            kWinners(animal.getPosition(),1).get(0).changeEnergy(energyParameters.energyFromEating());
+            removeGrass(grasses.get(animal.getPosition()));
         }
     }
 
@@ -151,4 +185,9 @@ public abstract class AbstractWorldMap implements WorldMap {
         return (newPosition.precedes(mapBorders.upperRight()) && newPosition.follows(mapBorders.lowerLeft()));
     }
     public abstract Vector2d nextPosition(Animal animal);
+
+    @Override
+    public WorldElement objectAt(Vector2d position) {
+        return this.animalsAlive.get(position).get(0);
+    }
 }

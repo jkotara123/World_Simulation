@@ -20,9 +20,9 @@ public abstract class AbstractGenome implements Genome
 
     public AbstractGenome(int length){
         for(int i = 0;i<length;i++){
-            this.genome.add(rd.nextInt()%8);
+            this.genome.add(rd.nextInt(8));
         }
-        this.index = rd.nextInt()%length;
+        this.index = rd.nextInt(length);
     }
     public AbstractGenome(Genome genome1, Genome genome2, int energy1, int energy2){
         int n = genome1.getGenome().size();
@@ -32,7 +32,7 @@ public abstract class AbstractGenome implements Genome
 
         if (rd.nextInt(2)==1){
             for(int i=0; i<biggerPart; i++) newGenomeList.add(genome1.getGenome().get(i));
-            for(int i=biggerPart+1; i<n; i++) newGenomeList.add(genome2.getGenome().get(i));
+            for(int i=biggerPart; i<n; i++) newGenomeList.add(genome2.getGenome().get(i));
         }
         else{
             for(int i=smallerPart; i<n; i++) newGenomeList.add(genome2.getGenome().get(i));

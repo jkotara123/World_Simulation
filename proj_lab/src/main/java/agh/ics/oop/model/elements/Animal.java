@@ -20,7 +20,7 @@ public class Animal implements WorldElement,Comparable<Animal> {
         Random rn = new Random();
         this.genome = genome;
         this.position=position;
-        this.orientation=MapDirection.values()[rn.nextInt()%4];
+        this.orientation=MapDirection.values()[rn.nextInt(4)];
         this.energy = energy;
         this.lifeSpan = 0;
     }
@@ -57,18 +57,18 @@ public class Animal implements WorldElement,Comparable<Animal> {
         orientation=orientation.oppositeDirection();
     }
 
-    public void move(WorldMap a){
+    public void move(WorldMap map){
         turn();
-        if(a.canMove(this)){
+        if(map.canMove(this)){
             moveTo(this.position.add(this.orientation.toUnitVector()));
         }
         else{
-        Vector2d newPosition= a.nextPosition(this);
+        Vector2d newPosition= map.nextPosition(this);
         this.moveTo(newPosition);
         }
         genome.nextIndex();
 
-        changeEnergy(-a.getEnergyParameters().energyToMove());
+        changeEnergy(-map.getEnergyParameters().energyToMove());
         getOlder();
     }
 

@@ -16,3 +16,10 @@ VBox {
 GridPane {
     -fx-alignment: center;
 }
+
+.headerLabel {
+    -fx-font-size: 25;
+    -fx-alignment: center;
+    -fx-label-padding: 20;
+}
+
