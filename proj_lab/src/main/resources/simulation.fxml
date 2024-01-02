@@ -10,20 +10,54 @@
 <?import javafx.scene.layout.GridPane?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            minHeight="550.0" minWidth="850.0" stylesheets="style.css"
+            minHeight="600" minWidth="900" stylesheets="style.css"
             fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <top>
-        <VBox>
-            <HBox>
-                <Button fx:id="StartButton" text="Start" onAction="#onSimulationStartClicked"/>
-                <TextField fx:id="getParameters"/>
-            </HBox>
-            <HBox>
-                <Label fx:id="moveLabel" styleClass="moveLabel" text="No moves yet"  />
-            </HBox>
-        </VBox>
+        <HBox fx:id="configTop">
+            <Label styleClass="headerLabel"  text="Wprowadź konfiguracje"  />
+        </HBox>
     </top>
     <center>
-        <GridPane fx:id="mapGrid" gridLinesVisible="true"/>
+        <VBox>
+        <VBox fx:id="configCenter">
+            <Label styleClass="moveLabel" text="Wybierz wariant mapy:"  />
+            <HBox>
+                <Button text="Kula Ziemska"/>
+                <Button text="Piekielny Portal"/>
+            </HBox>
+            <Label styleClass="moveLabel" text="Wybierz wariant mutacji:"  />
+            <HBox>
+                <Button text="Pełna Losowość"/>
+                <Button text = "Lekka Korekta"/>
+            </HBox>
+            <Label styleClass="moveLabel" text="Wprowadź wymiary mapy:"  />
+            <HBox>
+                <TextField fx:id="heightTextField" promptText="wysokość mapy"/>
+                <TextField fx:id="widthTextField" promptText="szerokość mapy"/>
+            </HBox>
+        </VBox>
+            <VBox>
+            <GridPane fx:id="mapGrid" visible="false" gridLinesVisible="true"/>
+        </VBox>
+        </VBox>
     </center>
+    <bottom>
+        <VBox>
+            <VBox fx:id="configBottom">
+                <Label fx:id="errorMessage" styleClass="moveLabel"/>
+                <HBox>
+                    <Button text="Start" onAction="#onSimulationStartClicked"/>
+                </HBox>
+            </VBox>
+            <VBox fx:id="simBottom" visible="false">
+                <HBox>
+                    <Button text="Stop" onAction="#onSimulationStopButtonClicked"/>
+                    <Button text="Resume"  onAction="#onSimulationResumeButtonClicked" />
+                </HBox>
+            </VBox>
+        </VBox>
+    </bottom>
 </BorderPane>
+
+
+

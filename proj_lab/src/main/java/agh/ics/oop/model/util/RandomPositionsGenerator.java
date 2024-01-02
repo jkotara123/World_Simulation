@@ -28,7 +28,7 @@ public class RandomPositionsGenerator{
     public ArrayList<Vector2d> kPositionsWithRepetition(List<Vector2d> positions, int positionAmount){
         ArrayList<Vector2d> points = new ArrayList<>(positionAmount);
         for(int i=0;i<positionAmount;i++){
-            points.add(positions.get(rand.nextInt()%positions.size()));
+            points.add(positions.get(rand.nextInt(positions.size())));
         }
         return points;
     }
