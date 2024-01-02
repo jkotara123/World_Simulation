@@ -13,15 +13,11 @@ public class SimulationApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
-        BorderPane viewRoot = loader.load();
-
-        SimulationPresenter presenter = loader.getController();
-
-        configureStage(primaryStage,viewRoot);
+        FXMLLoader loader2 = new FXMLLoader();
+        loader2.setLocation(getClass().getClassLoader().getResource("configuration.fxml"));
+        BorderPane viewRoot = loader2.load();
+        configureStage(primaryStage, viewRoot);
         primaryStage.show();
-
     }
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
         var scene = new Scene(viewRoot);
@@ -30,4 +26,6 @@ public class SimulationApp extends Application {
         primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
+
+
 }

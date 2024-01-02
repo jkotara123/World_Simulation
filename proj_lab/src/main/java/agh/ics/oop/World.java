@@ -4,6 +4,7 @@ import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.elements.Genome;
 import agh.ics.oop.model.observers.ConsoleMapDisplay;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class World {
         try {
             EnergyParameters energyParameters = new EnergyParameters(10,5,1,20,15);
             SimulationParameters simulationParameters = new SimulationParameters(10,10,
-                    0,0,0,0,
+                    0,0,
                     10,3,3,
                     4,0,0, energyParameters);
 
@@ -25,6 +26,8 @@ public class World {
         }
         catch (IllegalArgumentException | InterruptedException ex){
             System.out.println(ex.getMessage());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

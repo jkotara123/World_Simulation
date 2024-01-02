@@ -5,6 +5,7 @@ import agh.ics.oop.model.elements.*;
 import agh.ics.oop.model.maps.*;
 import agh.ics.oop.model.util.RandomPositionsGenerator;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 
@@ -17,7 +18,8 @@ public class Simulation implements Runnable{
     private final RandomPositionsGenerator randomPositionsGenerator = new RandomPositionsGenerator();
     private boolean isRunning = false;
     private int dayCounter = 1;
-    public Simulation(SimulationParameters simulationParameters){
+
+    public Simulation(SimulationParameters simulationParameters) throws FileNotFoundException {
         this.simulationParameters = simulationParameters;
         map = simulationParameters.getMap();
 
