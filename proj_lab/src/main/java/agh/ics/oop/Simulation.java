@@ -57,16 +57,18 @@ public class Simulation implements Runnable{
         return map;
     }
 
-    public void removeDeadAnimal(Animal animal) {
-        this.animalsAlive.remove(animal);
-        map.removeAnimal(animal);
-        animalsDead.add(animal);
+    public void removeIfDead(Animal animal) {
+        if (animal.getEnergy()<=0){
+            this.animalsAlive.remove(animal);
+            map.removeAnimal(animal);
+            animalsDead.add(animal);
+        }
     }
     public void reproduce(Vector2d position){
         if(map.animalsAt(position).size()>=2){
             List<Animal> parents = map.kWinners(position,2);
             if(parents.get(1).getEnergy()>=simulationParameters.energyParameters().energyToFull()){
-                Animal child = new Animal(parents.get(0),parents.get(1),simulationParameters.energyParameters().energyToReproduce(),simulationParameters.mutationVariant());
+                Animal child = new Animal(parents.get(0),parents.get(1),simulationParameters);
                 map.placeAnimal(child);
                 animalsAlive.add(child);
                 parents.get(0).changeEnergy(-simulationParameters.energyParameters().energyToReproduce());
@@ -104,19 +106,19 @@ public class Simulation implements Runnable{
         startRunning();
         while(true) { // na razie daje tu losowa liczbe jako liczbe wykonan
             //usuniecie martwych zwierzakow
-            animalsAlive.removeIf(animal -> animal.getEnergy() <= 0);
+            new ArrayList<>(animalsAlive).forEach(this::removeIfDead);
 
             //ruszanie sie zwierzakow
             animalsAlive.forEach(map::move);
 
             //jedzenie roslin
-            animalsAlive.forEach(map::eatGrass);
+            new ArrayList<>(map.getGrasses().values()).forEach(map::eatGrass);
 
-                //rozmnazanie sie najedzonych zwierzakow
-                map.getMapBorders().allPositions().forEach(this::reproduce); // do sprawdzenia
+            //rozmnazanie sie najedzonych zwierzakow
+            map.getMapBorders().allPositions().forEach(this::reproduce); // do sprawdzenia
 
-                //nowe rosliny
-                map.growGrass(simulationParameters.dailyGrassGrowth());
+            //nowe rosliny
+            map.growGrass(simulationParameters.dailyGrassGrowth());
 
                 try {
                     if (isRunning) {

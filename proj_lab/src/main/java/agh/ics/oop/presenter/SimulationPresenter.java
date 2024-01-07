@@ -109,11 +109,11 @@ public class SimulationPresenter implements MapChangeListener {
             errorMessage.setText("Nieprawidłowe dane");
         }
         else {
-            EnergyParameters energyParameters = new EnergyParameters(10, 5, 1, 20, 15);
+            EnergyParameters energyParameters = new EnergyParameters(5, 15, 1, 10, 50);
             SimulationParameters simulationParameters = new SimulationParameters(width, height,
-                    1, 0, 0, 0,
-                    5, 1, 3,
-                    2, 0, 0, energyParameters);
+                    0, 1, 0, 0,
+                    10, 5, 10,
+                    3, 2, 5, energyParameters);
             configCenter.setVisible(false);
             configTop.setVisible(false);
             configBottom.setVisible(false);

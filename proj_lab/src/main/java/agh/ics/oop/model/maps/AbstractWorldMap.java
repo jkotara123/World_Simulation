@@ -12,6 +12,8 @@ import agh.ics.oop.model.util.RandomPositionsGenerator;
 import java.util.*;
 
 import static java.lang.Math.min;
+import static java.lang.Math.round;
+
 public abstract class AbstractWorldMap implements WorldMap {
     private final List<MapChangeListener> observers = new ArrayList<>();
 
@@ -32,8 +34,8 @@ public abstract class AbstractWorldMap implements WorldMap {
         this.energyParameters = energyParameters;
 
         int height = mapBorders.upperRight().y()-mapBorders.lowerLeft().y()+1;
-        int lowEq = (height%2==0) ? height/2-1 - height/5-1 : height/2 - height/5-1;
-        int highEq = height/2 + height/5-1;
+        int lowEq = (height%2==0) ? height/2-1 - round((float) height /10)+1 : height/2 - round((float) height /10)+1;
+        int highEq = height/2 + round((float) height /10)-1;
         this.equator = new Boundary(new Vector2d(0,lowEq),new Vector2d(mapBorders.upperRight().x(),highEq));
 
         this.emptyPlacesOnEquator = this.equator.allPositions();
@@ -126,17 +128,20 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
     @Override
     public List<Animal> kWinners(Vector2d position, int k){
-        return animalsAt(position).stream()
-                .sorted()
+        System.out.println("przed sortowaniem: "+animalsAt(position));
+        List<Animal> winners = animalsAt(position).stream()
+                .sorted(Collections.reverseOrder())
                 .limit(k)
                 .toList();
+        System.out.println(k+"po sortowaniu: "+winners);
+        return winners;
     }
 
 
-    public void eatGrass(Animal animal) {
-        if (grasses.containsKey(animal.getPosition())){
-            kWinners(animal.getPosition(),1).get(0).changeEnergy(energyParameters.energyFromEating());
-            removeGrass(grasses.get(animal.getPosition()));
+    public void eatGrass(Grass grass) {
+        if (!animalsAt(grass.getPosition()).isEmpty()){
+            kWinners(grass.getPosition(),1).get(0).changeEnergy(energyParameters.energyFromEating());
+            removeGrass(grass);
         }
     }
 
