@@ -1,5 +1,6 @@
 package agh.ics.oop.model.elements;
 
+import agh.ics.oop.SimulationParameters;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.maps.WorldMap;
@@ -14,18 +15,25 @@ public class Animal implements WorldElement,Comparable<Animal> {
     private final Genome genome;
     private int energy;
     private int lifeSpan;
-    private List<Animal> children = new ArrayList<>();
+    private final List<Animal> children = new ArrayList<>();
 
     public Animal(Genome genome, Vector2d position, int energy){
         Random rn = new Random();
         this.genome = genome;
         this.position=position;
-        this.orientation=MapDirection.values()[rn.nextInt()%4];
+        this.orientation=MapDirection.values()[rn.nextInt(4)];
         this.energy = energy;
         this.lifeSpan = 0;
     }
-    public Animal(Animal animal1, Animal animal2, int energyToReproduce, int genomeVariant){
-        this(new DefaultGenome(animal1.genome,animal2.genome,animal1.energy,animal2.energy), animal1.getPosition(),energyToReproduce*2 );
+    public Animal(Animal animal1, Animal animal2, SimulationParameters simulationParameters){
+        this.energy = simulationParameters.energyParameters().energyToReproduce()*2;
+        this.position = animal1.getPosition();
+        if(simulationParameters.mutationVariant() == 1) this.genome = new Variant1Genome(animal1.genome,animal2.genome,animal1.energy,animal2.energy,simulationParameters.minChildrenMutations(),simulationParameters.maxChildrenMutations());
+        else this.genome = new DefaultGenome(animal1.genome,animal2.genome,animal1.energy,animal2.energy,simulationParameters.minChildrenMutations(),simulationParameters.maxChildrenMutations());
+        Random rn = new Random();
+        this.orientation=MapDirection.values()[rn.nextInt(4)];
+        this.lifeSpan = 0;
+
     }
     public MapDirection getOrientation() {
         return this.orientation;
@@ -42,7 +50,7 @@ public class Animal implements WorldElement,Comparable<Animal> {
     }
     @Override
     public String toString(){
-        return orientation.toString();
+        return String.valueOf(energy);
     }
     @Override
     public boolean isAt(Vector2d position){
@@ -57,18 +65,18 @@ public class Animal implements WorldElement,Comparable<Animal> {
         orientation=orientation.oppositeDirection();
     }
 
-    public void move(WorldMap a){
+    public void move(WorldMap map){
         turn();
-        if(a.canMove(this)){
+        if(map.canMove(this)){
             moveTo(this.position.add(this.orientation.toUnitVector()));
         }
         else{
-        Vector2d newPosition= a.nextPosition(this);
+        Vector2d newPosition= map.nextPosition(this);
         this.moveTo(newPosition);
         }
         genome.nextIndex();
 
-        changeEnergy(-a.getEnergyParameters().energyToMove());
+        changeEnergy(-map.getEnergyParameters().energyToMove());
         getOlder();
     }
 

@@ -28,4 +28,10 @@ public class Boundary{
     public Vector2d upperRight(){
         return this.upperRight;
     }
+    @Override
+    public String toString() {
+        return "[" +lowerLeft +
+                "-" + upperRight +
+                ']';
+    }
 }

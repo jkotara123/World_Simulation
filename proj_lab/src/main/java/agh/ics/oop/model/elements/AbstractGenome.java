@@ -20,29 +20,30 @@ public abstract class AbstractGenome implements Genome
 
     public AbstractGenome(int length){
         for(int i = 0;i<length;i++){
-            this.genome.add(rd.nextInt()%8);
+            this.genome.add(rd.nextInt(8));
         }
-        this.index = rd.nextInt()%length;
+        this.index = rd.nextInt(length);
     }
-    public AbstractGenome(Genome genome1, Genome genome2, int energy1, int energy2){
+    public AbstractGenome(Genome genome1, Genome genome2, int energy1, int energy2, int minMutations, int maxMutations){
         int n = genome1.getGenome().size();
         int biggerPart = n*energy1/(energy1+energy2);
         int smallerPart = n-biggerPart;
         ArrayList<Integer> newGenomeList = new ArrayList<>();
-
+        System.out.println(genome1+", "+energy1+" + "+genome2+", "+energy2+" =");
         if (rd.nextInt(2)==1){
             for(int i=0; i<biggerPart; i++) newGenomeList.add(genome1.getGenome().get(i));
-            for(int i=biggerPart+1; i<n; i++) newGenomeList.add(genome2.getGenome().get(i));
+            for(int i=biggerPart; i<n; i++) newGenomeList.add(genome2.getGenome().get(i));
         }
         else{
-            for(int i=smallerPart; i<n; i++) newGenomeList.add(genome2.getGenome().get(i));
-            for(int i=0; i<smallerPart; i++) newGenomeList.add(genome1.getGenome().get(i));
+            for(int i=0; i<smallerPart; i++) newGenomeList.add(genome2.getGenome().get(i));
+            for(int i=smallerPart; i<n; i++) newGenomeList.add(genome1.getGenome().get(i));
         }
-
+        System.out.println();
         this.genome=newGenomeList;
         this.index=rd.nextInt(n);
-
-        this.mutate();
+        System.out.println("Przed mutacja: "+this);
+        this.mutate(minMutations,maxMutations);
+        System.out.println("Po mutacji: "+this);
     }
 
     public List<Integer> getGenome() {
@@ -62,18 +63,20 @@ public abstract class AbstractGenome implements Genome
     }
 
     @Override
-    public List<Integer> chooseToMutate() {
+    public List<Integer> chooseToMutate(int minMutations, int maxMutations) {
         int n = this.getGenome().size();
         ArrayList<Integer> permutation = new ArrayList<>();
         for(int i=0;i<n;i++) permutation.add(i);
         Collections.shuffle(permutation);
-        return permutation.subList(0,rd.nextInt(n));
+        List<Integer> res = permutation.subList(0,rd.nextInt(minMutations,maxMutations+1));
+        System.out.println(res);
+        return res;
     }
 
-    public abstract void mutate();
+    public abstract void mutate(int minMutations, int maxMutations);
 
     @Override
     public String toString() {
-        return super.toString();
+        return genome.toString();
     }
 }
