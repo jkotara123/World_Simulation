@@ -3,10 +3,7 @@ package agh.ics.oop;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.elements.*;
 import agh.ics.oop.model.maps.*;
-import agh.ics.oop.model.observers.ConsoleMapDisplay;
 import agh.ics.oop.model.util.RandomPositionsGenerator;
-import agh.ics.oop.presenter.SimulationPresenter;
-import javafx.fxml.FXMLLoader;
 
 import java.util.*;
 
@@ -19,7 +16,7 @@ public class Simulation implements Runnable{
     private final SimulationParameters simulationParameters;
     private final RandomPositionsGenerator randomPositionsGenerator = new RandomPositionsGenerator();
     private boolean isRunning = false;
-
+    private int dayCounter = 1;
     public Simulation(SimulationParameters simulationParameters){
         this.simulationParameters = simulationParameters;
         map = simulationParameters.getMap();
@@ -46,6 +43,7 @@ public class Simulation implements Runnable{
                     simulationParameters.energyParameters().startingEnergy());
             this.map.placeAnimal(animal);
             animalsAlive.add(animal);
+            addGenome(animal);
         }
     }
     public Animal getAnimal(int i) {
@@ -62,6 +60,8 @@ public class Simulation implements Runnable{
             this.animalsAlive.remove(animal);
             map.removeAnimal(animal);
             animalsDead.add(animal);
+            animal.setDeathDay(dayCounter);
+            System.out.println("Zwierze umarlo na pozycji "+animal.getPosition()+". Żyło "+animal.getLifeSpan());
         }
     }
     public void reproduce(Vector2d position){
@@ -71,14 +71,30 @@ public class Simulation implements Runnable{
                 Animal child = new Animal(parents.get(0),parents.get(1),simulationParameters);
                 map.placeAnimal(child);
                 animalsAlive.add(child);
-                parents.get(0).changeEnergy(-simulationParameters.energyParameters().energyToReproduce());
-                parents.get(1).changeEnergy(-simulationParameters.energyParameters().energyToReproduce());
+
+                addGenome(child);
+                System.out.println("Nowe zwierze na pozycji: "+child.getPosition()+", "+child.getGenome());
             }
         }
     }
+    public void addGenome(Animal animal){
+        Genome genome = animal.getGenome();
+        if (!genomeList.containsKey(genome)){
+            genomeList.put(genome,new ArrayList<>());
+        }
+        genomeList.get(genome).add(animal);
+    }
 
     public Genome mostPopularGenome() {
-        return null;
+        Genome resGenome = new DefaultGenome(1);
+        int currMaxSize = 0;
+        for(Genome genome : genomeList.keySet() ){
+            if (genomeList.get(genome).size() > currMaxSize) {
+                currMaxSize = genomeList.get(genome).size();
+                resGenome = genome;
+            }
+        }
+        return resGenome;
     }
 
     public int averageEnergy() {
@@ -87,13 +103,23 @@ public class Simulation implements Runnable{
 
 
     public int averageLifeSpan() {
+        if (animalsDead.isEmpty()) return 0;
         return animalsDead.stream().mapToInt(Animal::getLifeSpan).sum()/animalsDead.size();
     }
 
-    public int averageChildrenNumber() {
-        return animalsAlive.stream()
+    public float averageChildrenNumber() {
+        return (float) animalsAlive.stream()
                 .mapToInt(animal -> animal.getChildren().size())
-                .sum()/animalsAlive.size();
+                .sum() /animalsAlive.size();
+    }
+
+    public void printStatistics(){
+        System.out.println("Średnia energia wśród żyjących zwierząt: "+averageEnergy());
+        System.out.println("Średnia liczba dzieci wśród żyjących zwierząt: "+averageChildrenNumber());
+        System.out.println("Liczba zmarłych zwierząt: "+animalsDead.size());
+        System.out.println("Średnia długość życia wśród zmarłych zwierząt: "+averageLifeSpan() );
+        System.out.println("Najpopularniejszy genom dotychczas: "+mostPopularGenome());
+        System.out.println("Zwierzeta z tym genomem: "+genomeList.get(mostPopularGenome()));
     }
     public void startRunning(){
         this.isRunning = true;
@@ -105,6 +131,11 @@ public class Simulation implements Runnable{
     public void run() {
         startRunning();
         while(true) { // na razie daje tu losowa liczbe jako liczbe wykonan
+
+
+            System.out.println("Dzień: "+this.dayCounter);
+            if(this.dayCounter%25 == 0) printStatistics();
+
             //usuniecie martwych zwierzakow
             new ArrayList<>(animalsAlive).forEach(this::removeIfDead);
 
@@ -119,6 +150,8 @@ public class Simulation implements Runnable{
 
             //nowe rosliny
             map.growGrass(simulationParameters.dailyGrassGrowth());
+
+            this.dayCounter+=1;
 
                 try {
                     if (isRunning) {

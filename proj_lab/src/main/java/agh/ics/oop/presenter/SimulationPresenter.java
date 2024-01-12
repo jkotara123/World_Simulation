@@ -55,7 +55,7 @@ public class SimulationPresenter implements MapChangeListener {
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             this.drawMap();
-            System.out.println(message);
+//            System.out.println(message);
 
         });
     }
@@ -109,11 +109,11 @@ public class SimulationPresenter implements MapChangeListener {
             errorMessage.setText("Nieprawidłowe dane");
         }
         else {
-            EnergyParameters energyParameters = new EnergyParameters(5, 15, 1, 10, 50);
+            EnergyParameters energyParameters = new EnergyParameters(3,8 , 1, 15, 30);
             SimulationParameters simulationParameters = new SimulationParameters(width, height,
                     0, 1, 0, 0,
-                    10, 5, 10,
-                    3, 2, 5, energyParameters);
+                    10, 10, 2,
+                    8, 0, 1, energyParameters);
             configCenter.setVisible(false);
             configTop.setVisible(false);
             configBottom.setVisible(false);
