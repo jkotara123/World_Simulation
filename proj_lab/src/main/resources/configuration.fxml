@@ -1,56 +1,161 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="agh.ics.oop.presenter.ConfigurationPresenter"
-            minHeight="400.0" minWidth="600.0" stylesheets="style.css">
+<BorderPane minHeight="700.0" minWidth="700.0" stylesheets="style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.ConfigurationPresenter">
 
     <top>
-        <HBox fx:id="configTop">
-            <Label styleClass="headerLabel"  text="Wprowadź konfiguracje"  />
+        <HBox fx:id="configTop" prefHeight="68.0" prefWidth="0.0">
+            <Label styleClass="headerLabel" text="Wprowadź konfiguracje">
+            <HBox.margin>
+               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </HBox.margin></Label>
+
         </HBox>
     </top>
     <center>
-        <VBox fx:id="configCenter">
-            <Label styleClass="moveLabel" text="Wybierz wariant mapy:"  />
-            <HBox>
-                <Button text="Kula Ziemska"/>
-                <Button text="Piekielny Portal"/>
-            </HBox>
-            <Label styleClass="moveLabel" text="Wybierz wariant mutacji:"  />
-            <HBox>
-                <Button text="Pełna Losowość"/>
-                <Button text = "Lekka Korekta"/>
-            </HBox>
-            <HBox>
-                <VBox>
-                    <TextField fx:id="heightTextField" promptText="map height"/>
-                    <TextField fx:id="widthTextField" promptText="map width"/>
-                    <TextField fx:id="startingGrassAmountTextField" promptText="starting grass amount"/>
-                    <TextField fx:id="startingAnimalAmountTextField" promptText="starting animal amount"/>
-                    <TextField fx:id="genomeLengthTextField" promptText="genome length"/>
-                    <TextField fx:id="dailyGrassGrowthTextField" promptText="daily grass growth amount"/>
+        <VBox>
+        <VBox fx:id="parameters_sets_box" alignment="TOP_CENTER">
+            <ComboBox fx:id="parameters_sets">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Configuration1" />
+                        <String fx:value="Configuration2" />
+                        <String fx:value="My configuration" />
+                    </FXCollections>
+                </items>
+            </ComboBox>
+            <Button onAction="#onConfirmConfigButton" text="Confirm" />
+        </VBox>
+        <VBox fx:id="configCenter" alignment="CENTER" visible="false">
+            <HBox alignment="CENTER" spacing="40.0">
+                <VBox alignment="TOP_CENTER" prefHeight="25.0" prefWidth="250.0" spacing="3.0">
+                    <Label alignment="CENTER" text="Choose map variant:" textAlignment="CENTER" />
+                    <ComboBox fx:id="mapVariantComboBox">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Kula ziemska" />
+                                <String fx:value="Piekielne portale" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                    <Label text="Map height" />
+                    <TextField fx:id="heightTextField" prefHeight="25.0" prefWidth="200.0" promptText="map height">
+                  <VBox.margin>
+                     <Insets bottom="6.0" />
+                  </VBox.margin></TextField>
+                    <Label text="Map width" />
+                    <TextField fx:id="widthTextField" promptText="map width">
+                  <VBox.margin>
+                     <Insets bottom="6.0" />
+                  </VBox.margin></TextField>
+                    <Label text="starting grass amount" />
+                    <TextField fx:id="startingGrassAmountTextField" promptText="starting grass amount">
+                  <VBox.margin>
+                     <Insets bottom="6.0" />
+                  </VBox.margin></TextField>
+                    <Label text="starting animal amount" />
+                    <TextField fx:id="startingAnimalAmountTextField" promptText="starting animal amount">
+                  <VBox.margin>
+                     <Insets bottom="6.0" />
+                  </VBox.margin></TextField>
+                    <Label text="genome length" />
+                    <TextField fx:id="genomeLengthTextField" promptText="genome length">
+                  <VBox.margin>
+                     <Insets bottom="6.0" />
+                  </VBox.margin></TextField>
+                    <Label text="daily grass growth amount" />
+                    <TextField fx:id="dailyGrassGrowthTextField" promptText="daily grass growth amount">
+                  <VBox.margin>
+                     <Insets bottom="6.0" />
+                  </VBox.margin></TextField>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
                 </VBox>
-                <VBox>
-                    <TextField fx:id="minChildrenMutationsTextField" promptText="minimal amount of genes mutating"/>
-                    <TextField fx:id="maxChildrenMutationsTextField" promptText="maximum amount of genes mutating"/>
-                    <TextField fx:id="energyFromEatingTextField" promptText="energy gained from eating"/>
-                    <TextField fx:id="energyToReproduceTextField" promptText="energy lost from reproducing"/>
-                    <TextField fx:id="energyToMoveTextField" promptText="energy lost from moving"/>
-                    <TextField fx:id="startingEnergyTextField" promptText="starting energy amount"/>
-                    <TextField fx:id="energyToFullTextField" promptText="energy needed for an animal to be considered full"/>
+                <VBox alignment="TOP_CENTER" opacity="0.96" prefHeight="25.0" prefWidth="250.0" spacing="3.0">
+                    <Label text="Choose mutation variant:" />
+                    <ComboBox fx:id="mapMutationComboBox">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Pełna losowość" />
+                                <String fx:value="Lekka korekta" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                    <Label text="min amount of genes mutating">
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin></Label>
+                    <TextField fx:id="minChildrenMutationsTextField" promptText="minimal amount of genes mutating">
+                  <VBox.margin>
+                     <Insets bottom="6.0" />
+                  </VBox.margin></TextField>
+                    <Label text="max amount of genes mutating" />
+                    <TextField fx:id="maxChildrenMutationsTextField" promptText="maximum amount of genes mutating">
+                  <VBox.margin>
+                     <Insets bottom="6.0" />
+                  </VBox.margin></TextField>
+                    <Label text="energy gained from eating" />
+                    <TextField fx:id="energyFromEatingTextField" promptText="energy gained from eating">
+                  <VBox.margin>
+                     <Insets bottom="6.0" />
+                  </VBox.margin></TextField>
+                    <Label text="energy lost from reproducing" />
+                    <TextField fx:id="energyToReproduceTextField" promptText="energy lost from reproducing">
+                  <VBox.margin>
+                     <Insets bottom="6.0" />
+                  </VBox.margin></TextField>
+                    <Label text="energy lost from moving" />
+                    <TextField fx:id="energyToMoveTextField" promptText="energy lost from moving">
+                  <VBox.margin>
+                     <Insets bottom="6.0" />
+                  </VBox.margin></TextField>
+                    <Label text="starting energy amount" />
+                    <TextField fx:id="startingEnergyTextField" promptText="starting energy amount">
+                  <VBox.margin>
+                     <Insets bottom="6.0" />
+                  </VBox.margin></TextField>
+                    <Label text="full animal energy" />
+                    <TextField fx:id="energyToFullTextField" promptText="energy needed for an animal to be considered full">
+                  <VBox.margin>
+                     <Insets bottom="6.0" />
+                  </VBox.margin></TextField>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
                 </VBox>
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets>
+            <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <VBox.margin>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </VBox.margin>
             </HBox>
+        </VBox>
         </VBox>
     </center>
     <bottom>
-        <VBox fx:id="configBottom">
-            <Label fx:id="errorMessage" styleClass="moveLabel"/>
-            <HBox>
-                <Button text="Confirm" onAction="#onConfirmButtonClicked"/>
+        <VBox fx:id="configBottom" visible="false">
+            <Label fx:id="errorMessage" />
+            <HBox alignment="CENTER">
+                <Button alignment="CENTER" onAction="#onConfirmButtonClicked" text="Confirm">
+               <HBox.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </HBox.margin></Button>
             </HBox>
         </VBox>
     </bottom>

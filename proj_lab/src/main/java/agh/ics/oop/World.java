@@ -13,7 +13,7 @@ public class World {
         try {
             EnergyParameters energyParameters = new EnergyParameters(10,5,1,20,15);
             SimulationParameters simulationParameters = new SimulationParameters(10,10,
-                    0,0,
+                    "Kula ziemska","Pełna losowość",
                     10,3,3,
                     4,0,0, energyParameters);
 

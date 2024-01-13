@@ -100,6 +100,7 @@ public class Simulation implements Runnable{
     }
 
     public int averageEnergy() {
+        if (animalsAlive.isEmpty()) return 0;
         return animalsAlive.stream().mapToInt(Animal::getEnergy).sum()/animalsAlive.size();
     }
 
