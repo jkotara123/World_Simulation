@@ -17,3 +17,7 @@ GridPane {
     -fx-alignment: center;
 }
 
+Button:hover{
+    -fx-cursor: grab;
+}
+

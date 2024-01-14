@@ -11,11 +11,16 @@ import agh.ics.oop.model.maps.WorldMap;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,9 +52,7 @@ public class SimulationPresenter implements MapChangeListener {
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
-            System.out.println("Dzień ");
             this.drawMap();
-//            System.out.println(message);
 
         });
     }
@@ -82,10 +85,23 @@ public class SimulationPresenter implements MapChangeListener {
             int newX= elem.getPosition().x()-bounds.lowerLeft().x() + 1;
             int newY= height - (elem.getPosition().y()-bounds.lowerLeft().y());
             Label label = new Label(elem.toString());
+            label.setPrefHeight(30);
+            label.setPrefWidth(30);
             mapGrid.add(label,newX,newY);
             GridPane.setHalignment(label, HPos.CENTER);
+            label.setBackground(new Background(new BackgroundFill(Color.BLUE,CornerRadii.EMPTY, Insets.EMPTY)));
         }
     }
+
+    private Label getLabelOnPosition(int x,int y){
+        for(Node node:mapGrid.getChildren()){
+            if (GridPane.getColumnIndex(node) == x && GridPane.getRowIndex(node)==y){
+                return (Label) node;
+            }
+        }
+        return null;
+    }
+
 
     public void onSimulationStopButtonClicked(){
         simulation.stopRunning();
