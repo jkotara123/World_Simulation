@@ -1,7 +1,6 @@
 package agh.ics.oop.model.elements;
 
 import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.elements.WorldElement;
 import agh.ics.oop.model.maps.Boundary;
 
 public class Grass implements WorldElement {

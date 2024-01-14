@@ -17,3 +17,6 @@ GridPane {
     -fx-alignment: center;
 }
 
+.titleLabel {
+    -fx-font-size: 20;
+}
