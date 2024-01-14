@@ -16,6 +16,8 @@ public class Animal implements WorldElement,Comparable<Animal> {
     private int energy;
     private int lifeSpan;
     private final List<Animal> children = new ArrayList<>();
+    private int grassEaten;
+    private int deathDay=-1;
 
     public Animal(Genome genome, Vector2d position, int energy){
         Random rn = new Random();
@@ -33,6 +35,10 @@ public class Animal implements WorldElement,Comparable<Animal> {
         Random rn = new Random();
         this.orientation=MapDirection.values()[rn.nextInt(4)];
         this.lifeSpan = 0;
+        animal1.changeEnergy(simulationParameters.energyParameters().energyToReproduce());
+        animal2.changeEnergy(simulationParameters.energyParameters().energyToReproduce());
+        animal1.children.add(this);
+        animal2.children.add(this);
 
     }
     public MapDirection getOrientation() {
@@ -75,16 +81,19 @@ public class Animal implements WorldElement,Comparable<Animal> {
         this.moveTo(newPosition);
         }
         genome.nextIndex();
-
-        changeEnergy(-map.getEnergyParameters().energyToMove());
+        this.changeEnergy(-map.getEnergyParameters().energyToMove());
         getOlder();
     }
 
-    public void moveTo(Vector2d position){
+    private void moveTo(Vector2d position){
         this.position = position;
     }
+    public void eat(int energyFromEating){
+        this.grassEaten+=1;
+        this.changeEnergy(energyFromEating);
+    }
 
-    public void changeEnergy(int value){
+    private void changeEnergy(int value){
         this.energy += value;
     }
     private void getOlder(){
@@ -98,7 +107,12 @@ public class Animal implements WorldElement,Comparable<Animal> {
         return children;
     }
 
-
+    public int countDescendants(){
+        if (this.children.isEmpty()) return 0;
+        int counter = 0;
+        for(Animal child : children)    counter+=child.countDescendants();
+        return counter;
+    }
     @Override
     public int compareTo(Animal other) {
         if(this.energy>other.energy){
@@ -119,5 +133,8 @@ public class Animal implements WorldElement,Comparable<Animal> {
             }
         }
         return -1;
+    }
+    public void setDeathDay(int day){
+        this.deathDay=day;
     }
 }

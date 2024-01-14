@@ -36,7 +36,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         int height = mapBorders.upperRight().y()-mapBorders.lowerLeft().y()+1;
         int lowEq = (height%2==0) ? height/2-1 - round((float) height /10)+1 : height/2 - round((float) height /10)+1;
         int highEq = height/2 + round((float) height /10)-1;
-        this.equator = new Boundary(new Vector2d(0,lowEq),new Vector2d(mapBorders.upperRight().x(),highEq));
+        this.equator = new Boundary(new Vector2d(0, lowEq),new Vector2d(mapBorders.upperRight().x(),highEq));
 
         this.emptyPlacesOnEquator = this.equator.allPositions();
         List<Vector2d> belowEq = new Boundary(mapBorders.lowerLeft(),new Vector2d(equator.upperRight().x(), equator.lowerLeft().y()-1)).allPositions();
@@ -128,19 +128,17 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
     @Override
     public List<Animal> kWinners(Vector2d position, int k){
-        System.out.println("przed sortowaniem: "+animalsAt(position));
-        List<Animal> winners = animalsAt(position).stream()
+        return animalsAt(position).stream()
                 .sorted(Collections.reverseOrder())
                 .limit(k)
                 .toList();
-        System.out.println(k+"po sortowaniu: "+winners);
-        return winners;
+
     }
 
 
     public void eatGrass(Grass grass) {
         if (!animalsAt(grass.getPosition()).isEmpty()){
-            kWinners(grass.getPosition(),1).get(0).changeEnergy(energyParameters.energyFromEating());
+            kWinners(grass.getPosition(),1).get(0).eat(energyParameters.energyFromEating());
             removeGrass(grass);
         }
     }

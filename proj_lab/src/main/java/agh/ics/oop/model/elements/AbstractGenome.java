@@ -1,9 +1,6 @@
 package agh.ics.oop.model.elements;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public abstract class AbstractGenome implements Genome
 {
@@ -29,7 +26,6 @@ public abstract class AbstractGenome implements Genome
         int biggerPart = n*energy1/(energy1+energy2);
         int smallerPart = n-biggerPart;
         ArrayList<Integer> newGenomeList = new ArrayList<>();
-        System.out.println(genome1+", "+energy1+" + "+genome2+", "+energy2+" =");
         if (rd.nextInt(2)==1){
             for(int i=0; i<biggerPart; i++) newGenomeList.add(genome1.getGenome().get(i));
             for(int i=biggerPart; i<n; i++) newGenomeList.add(genome2.getGenome().get(i));
@@ -41,9 +37,7 @@ public abstract class AbstractGenome implements Genome
         System.out.println();
         this.genome=newGenomeList;
         this.index=rd.nextInt(n);
-        System.out.println("Przed mutacja: "+this);
         this.mutate(minMutations,maxMutations);
-        System.out.println("Po mutacji: "+this);
     }
 
     public List<Integer> getGenome() {
@@ -69,7 +63,6 @@ public abstract class AbstractGenome implements Genome
         for(int i=0;i<n;i++) permutation.add(i);
         Collections.shuffle(permutation);
         List<Integer> res = permutation.subList(0,rd.nextInt(minMutations,maxMutations+1));
-        System.out.println(res);
         return res;
     }
 
@@ -78,5 +71,16 @@ public abstract class AbstractGenome implements Genome
     @Override
     public String toString() {
         return genome.toString();
+    }
+    @Override
+    public boolean equals(Object other){
+//        return true;
+        if(this == other) return true;
+        if(! (other instanceof Genome)) return false;
+        return this.genome.equals(((Genome) other).getGenome());
+    }
+    @Override
+    public int hashCode(){
+        return Objects.hash(this.genome);
     }
 }
