@@ -1,9 +1,6 @@
 package agh.ics.oop.model.elements;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class DefaultGenome extends AbstractGenome{
     public DefaultGenome(int length){

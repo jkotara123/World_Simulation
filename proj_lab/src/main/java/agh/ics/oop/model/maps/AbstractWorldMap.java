@@ -56,9 +56,10 @@ public abstract class AbstractWorldMap implements WorldMap {
   
       @Override
     public List<WorldElement> getElements() {
-        List<WorldElement> elements = new ArrayList<>(grasses.values());
-        for(List<Animal> animalList : animalsAlive.values()){
-            elements.addAll(animalList);
+        List<WorldElement> elements = new ArrayList<>();
+        for(Vector2d position : mapBorders.allPositions()){
+            if(!animalsAt(position).isEmpty()) elements.addAll(kWinners(position,1));
+            else if (grasses.containsKey(position)) elements.add(grasses.get(position));
         }
         return elements;
     }

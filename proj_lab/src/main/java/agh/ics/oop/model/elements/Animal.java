@@ -138,4 +138,10 @@ public class Animal implements WorldElement,Comparable<Animal> {
     public void setDeathDay(int day){
         this.deathDay=day;
     }
+    public int getDeathDay(){
+        return this.deathDay;
+    }
+    public int getGrassEaten(){
+        return this.grassEaten;
+    }
 }

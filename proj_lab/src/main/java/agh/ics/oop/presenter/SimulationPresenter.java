@@ -47,6 +47,7 @@ public class SimulationPresenter implements MapChangeListener {
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
+            System.out.println("Dzień ");
             this.drawMap();
 //            System.out.println(message);
 
