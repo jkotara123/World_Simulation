@@ -12,6 +12,7 @@ import java.util.Map;
 
 public interface WorldMap extends MoveValidator {
     Boundary getMapBorders();
+    Boundary getEquator();
     Map<Vector2d,Grass> getGrasses();
     List<WorldElement> getElements(); //zwraca liste zwierzat i roslin (przydatne w rysowaniu bedzie (chyba) )
     EnergyParameters getEnergyParameters();

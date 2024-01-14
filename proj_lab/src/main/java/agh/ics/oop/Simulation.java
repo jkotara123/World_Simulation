@@ -86,6 +86,9 @@ public class Simulation implements Runnable{
         }
         genomeList.get(genome).add(animal);
     }
+    public int getDayCounter(){
+        return dayCounter;
+    }
 
     public Genome mostPopularGenome() {
         Genome resGenome = new DefaultGenome(1);
@@ -99,15 +102,15 @@ public class Simulation implements Runnable{
         return resGenome;
     }
 
-    public int averageEnergy() {
+    public float averageEnergy() {
         if (animalsAlive.isEmpty()) return 0;
-        return animalsAlive.stream().mapToInt(Animal::getEnergy).sum()/animalsAlive.size();
+        return (float) animalsAlive.stream().mapToInt(Animal::getEnergy).sum()/animalsAlive.size();
     }
 
 
-    public int averageLifeSpan() {
+    public float averageLifeSpan() {
         if (animalsDead.isEmpty()) return 0;
-        return animalsDead.stream().mapToInt(Animal::getLifeSpan).sum()/animalsDead.size();
+        return (float) animalsDead.stream().mapToInt(Animal::getLifeSpan).sum()/animalsDead.size();
     }
 
     public float averageChildrenNumber() {
@@ -115,14 +118,12 @@ public class Simulation implements Runnable{
                 .mapToInt(animal -> animal.getChildren().size())
                 .sum() /animalsAlive.size();
     }
+    public int getDeadAnimalsCount(){
+        return animalsDead.size();
+    }
 
-    public void printStatistics(){
-        System.out.println("Średnia energia wśród żyjących zwierząt: "+averageEnergy());
-        System.out.println("Średnia liczba dzieci wśród żyjących zwierząt: "+averageChildrenNumber());
-        System.out.println("Liczba zmarłych zwierząt: "+animalsDead.size());
-        System.out.println("Średnia długość życia wśród zmarłych zwierząt: "+averageLifeSpan() );
-        System.out.println("Najpopularniejszy genom dotychczas: "+mostPopularGenome());
-        System.out.println("Zwierzeta z tym genomem: "+genomeList.get(mostPopularGenome()));
+    public List<Animal> animalsWithMostPopularGenome(){
+        return genomeList.get(this.mostPopularGenome());
     }
     public void startRunning(){
         this.isRunning = true;
@@ -137,7 +138,7 @@ public class Simulation implements Runnable{
 
 
             System.out.println("Dzień: "+this.dayCounter);
-            if(this.dayCounter%25 == 0) printStatistics();
+//            if(this.dayCounter%25 == 0) System.out.println(getStatistics());
 
             //usuniecie martwych zwierzakow
             new ArrayList<>(animalsAlive).forEach(this::removeIfDead);

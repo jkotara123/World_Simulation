@@ -38,7 +38,8 @@ public abstract class AbstractWorldMap implements WorldMap {
         int highEq = height/2 + round((float) height /10)-1;
         this.equator = new Boundary(new Vector2d(0, lowEq),new Vector2d(mapBorders.upperRight().x(),highEq));
 
-        this.emptyPlacesOnEquator = this.equator.allPositions();
+        this.emptyPlacesOnEquator = new ArrayList<>();
+        emptyPlacesOnEquator.addAll(equator.allPositions());
         List<Vector2d> belowEq = new Boundary(mapBorders.lowerLeft(),new Vector2d(equator.upperRight().x(), equator.lowerLeft().y()-1)).allPositions();
         List<Vector2d> aboveEq = new Boundary(new Vector2d(equator.lowerLeft().x(),equator.upperRight().y()+1),mapBorders.upperRight()).allPositions();
         emptyPlacesNotOnEquator = new ArrayList<>(belowEq);
@@ -49,10 +50,14 @@ public abstract class AbstractWorldMap implements WorldMap {
     public Boundary getMapBorders(){
         return mapBorders;
     }
+    public Boundary getEquator(){
+        return this.equator;
+    }
   
     public Map<Vector2d,Grass> getGrasses(){
         return grasses;
     }
+
   
       @Override
     public List<WorldElement> getElements() {
