@@ -7,6 +7,7 @@ import agh.ics.oop.model.maps.WorldMap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class Animal implements WorldElement,Comparable<Animal> {
@@ -30,7 +31,7 @@ public class Animal implements WorldElement,Comparable<Animal> {
     public Animal(Animal animal1, Animal animal2, SimulationParameters simulationParameters){
         this.energy = simulationParameters.energyParameters().energyToReproduce()*2;
         this.position = animal1.getPosition();
-        if(simulationParameters.mutationVariant() == 1) this.genome = new Variant1Genome(animal1.genome,animal2.genome,animal1.energy,animal2.energy,simulationParameters.minChildrenMutations(),simulationParameters.maxChildrenMutations());
+        if(Objects.equals(simulationParameters.mutationVariant(), "Lekka korekta")) this.genome = new Variant1Genome(animal1.genome,animal2.genome,animal1.energy,animal2.energy,simulationParameters.minChildrenMutations(),simulationParameters.maxChildrenMutations());
         else this.genome = new DefaultGenome(animal1.genome,animal2.genome,animal1.energy,animal2.energy,simulationParameters.minChildrenMutations(),simulationParameters.maxChildrenMutations());
         Random rn = new Random();
         this.orientation=MapDirection.values()[rn.nextInt(4)];

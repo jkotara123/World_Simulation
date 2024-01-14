@@ -22,23 +22,16 @@ import java.util.List;
 
 public class SimulationPresenter implements MapChangeListener {
 
-
-    public TextField heightTextField;
-    public TextField widthTextField;
-    public Label errorMessage;
-    public VBox configBottom;
-    public HBox configTop;
-    public VBox configCenter;
     public VBox simBottom;
     @FXML
     private GridPane mapGrid;
     private WorldMap map;
     private Simulation simulation;
 
-    private void setMap(WorldMap map){
+    public void setMap(WorldMap map){
         this.map = map;
     }
-    private void setSimulation(Simulation simulation){
+    public void setSimulation(Simulation simulation){
         this.simulation = simulation;
     }
     private void drawMap(){
@@ -99,31 +92,7 @@ public class SimulationPresenter implements MapChangeListener {
     public void onSimulationResumeButtonClicked(){
         simulation.startRunning();
     }
-    public void onSimulationStartClicked(){
-        String[] widthString = widthTextField.getText().split(" ");
-        int width = Integer.parseInt(widthString[0]);
-        String[] heightString = heightTextField.getText().split(" ");
-        int height = Integer.parseInt(heightString[0]);
-
-        if(width<=0 || height<=0){
-            errorMessage.setText("Nieprawidłowe dane");
-        }
-        else {
-            EnergyParameters energyParameters = new EnergyParameters(3,8 , 1, 15, 30);
-            SimulationParameters simulationParameters = new SimulationParameters(width, height,
-                    0, 1, 0, 0,
-                    10, 10, 2,
-                    8, 0, 1, energyParameters);
-            configCenter.setVisible(false);
-            configTop.setVisible(false);
-            configBottom.setVisible(false);
-            simBottom.setVisible(true);
-            mapGrid.setVisible(true);
-
-
-            Simulation simulation = new Simulation(simulationParameters);
-
-            this.setSimulation(simulation);
+    public void runSimulation(){
             this.setMap(simulation.getMap());
             map.addObserver(this);
 
@@ -135,4 +104,4 @@ public class SimulationPresenter implements MapChangeListener {
             }
         }
     }
-}
+
