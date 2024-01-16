@@ -50,7 +50,15 @@ public class ConfigurationPresenter {
     public CheckBox configSave;
 
     private Simulation simulation;
+    private List<List<String>> records;
 
+
+    public ConfigurationPresenter() {
+        records = getRecords();
+        for(List<String> row: records){
+            parameters_sets.getItems().add(row.get(0));
+        }
+    }
 
     private void setSimulation(Simulation simulation){
         this.simulation = simulation;
@@ -111,7 +119,7 @@ public class ConfigurationPresenter {
     }
     private List<List<String>> getRecords(){
         List<List<String>> records = new ArrayList<>();
-        File file = new File(getClass().getClassLoader().getResource("config_sets.csv").getPath());
+        File file = new File("config_sets.csv");
         try(BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -124,11 +132,14 @@ public class ConfigurationPresenter {
         return records;
     }
 
-    private void addRecord(List<String> parameters) throws FileNotFoundException {
 
-        File file = new File(getClass().getClassLoader().getResource("config_sets.csv").getPath());
+    private void printRecords() throws FileNotFoundException {
+
+        File file = new File("config_sets.csv");
         try (PrintWriter pw = new PrintWriter(file)) {
-            pw.println(String.join(",", parameters));
+            for (List<String> row: records) {
+                pw.println(String.join(",", row));
+            }
         }
     }
 
@@ -155,21 +166,16 @@ public class ConfigurationPresenter {
             parameters.add(energyToFullTextField.getText().split(" ")[0]);
             System.out.println(parameters);
             if (configSave.isSelected()){
-                List<List<String>> records = getRecords();
+
                 for (List<String> row : records) {
                     if (Objects.equals(row.get(0), parameters.get(0))) {
                         throw new IllegalArgumentException("There is already a configuration with that name");
                     }
                 }
-                try {
-                    addRecord(parameters);
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
+                records.add(parameters);
             }
         }
         else {
-            List<List<String>> records = getRecords();
 
 
             for (List<String> row : records) {
@@ -179,10 +185,13 @@ public class ConfigurationPresenter {
                 }
             }
         }
+        try {
+            printRecords();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         SimulationParameters simulationParameters = setParameters(parameters);
-
-
 
 
         try {
