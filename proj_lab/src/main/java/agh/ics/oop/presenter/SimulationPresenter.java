@@ -23,6 +23,8 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class SimulationPresenter implements MapChangeListener {
@@ -32,6 +34,7 @@ public class SimulationPresenter implements MapChangeListener {
     private GridPane mapGrid;
     private WorldMap map;
     private Simulation simulation;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     public void setMap(WorldMap map){
         this.map = map;
@@ -51,10 +54,7 @@ public class SimulationPresenter implements MapChangeListener {
     }
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
-        Platform.runLater(() -> {
-            this.drawMap();
-
-        });
+        Platform.runLater(this::drawMap);
     }
     private void clearGrid() {
         mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0)); // hack to retain visible grid lines
@@ -103,22 +103,15 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
 
-    public void onSimulationStopButtonClicked(){
+    @FXML
+    private void stopSimulation(){
+        executorService.execute(simulation);
         simulation.stopRunning();
     }
-    public void onSimulationResumeButtonClicked(){
-        simulation.startRunning();
-    }
     public void runSimulation(){
-            this.setMap(simulation.getMap());
-            map.addObserver(this);
+        simulation.startRunning();
+        executorService.submit(simulation);
 
-            try {
-                SimulationEngine engine = new SimulationEngine(new ArrayList<>(List.of(simulation)), 4);
-                engine.runAsync();
-            } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
-            }
         }
     }
 

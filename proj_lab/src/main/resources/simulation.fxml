@@ -13,8 +13,8 @@
     <bottom>
         <VBox fx:id="simBottom">
             <HBox alignment="TOP_CENTER" spacing="20.0">
-                <Button onAction="#onSimulationStopButtonClicked" text="Stop" />
-                <Button onAction="#onSimulationResumeButtonClicked" text="Resume" />
+                <Button onAction="#stopSimulation" text="Stop" />
+                <Button onAction="#runSimulation" text="Resume" />
             <VBox.margin>
                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </VBox.margin>

@@ -1,5 +1,6 @@
 package agh.ics.oop;
 
+import agh.ics.oop.presenter.ConfigurationPresenter;
 import agh.ics.oop.presenter.SimulationPresenter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -13,11 +14,14 @@ public class SimulationApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader loader2 = new FXMLLoader();
-        loader2.setLocation(getClass().getClassLoader().getResource("configuration.fxml"));
-        BorderPane viewRoot = loader2.load();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("configuration.fxml"));
+        BorderPane viewRoot = loader.load();
+        ConfigurationPresenter presenter = loader.getController();
+        presenter.loadRecords();
         configureStage(primaryStage, viewRoot);
         primaryStage.show();
+
     }
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
         var scene = new Scene(viewRoot);

@@ -3,8 +3,7 @@ package agh.ics.oop.presenter;
 import agh.ics.oop.EnergyParameters;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationParameters;
-import javafx.collections.ObservableArray;
-import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
@@ -12,8 +11,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -21,39 +18,54 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 public class ConfigurationPresenter {
-    public TextField heightTextField;
-    public TextField widthTextField;
-    public Label errorMessage;
+    @FXML
+    private TextField heightTextField;
+    @FXML
+    private TextField widthTextField;
+    @FXML
+    private Label errorMessage;
+    @FXML
     public TextField startingGrassAmountTextField;
+    @FXML
     public TextField startingAnimalAmountTextField;
+    @FXML
     public TextField genomeLengthTextField;
+    @FXML
     public TextField dailyGrassGrowthTextField;
+    @FXML
     public TextField minChildrenMutationsTextField;
+    @FXML
     public TextField maxChildrenMutationsTextField;
+    @FXML
     public TextField energyFromEatingTextField;
+    @FXML
     public TextField energyToReproduceTextField;
+    @FXML
     public TextField energyToMoveTextField;
+    @FXML
     public TextField startingEnergyTextField;
+    @FXML
     public TextField energyToFullTextField;
+    @FXML
     public ComboBox<String> mapVariantComboBox;
+    @FXML
     public ComboBox<String> mapMutationComboBox;
-    public HBox configTop;
+    @FXML
     public ComboBox<String> parameters_sets;
-    public VBox configCenter;
-    public VBox parameters_sets_box;
-    public VBox configBottom;
+    @FXML
     public TextField nameField;
+    @FXML
     public CheckBox configSave;
 
     private Simulation simulation;
+
     private List<List<String>> records;
 
 
-    public ConfigurationPresenter() {
+    public void loadRecords() {
         records = getRecords();
         for(List<String> row: records){
             parameters_sets.getItems().add(row.get(0));
@@ -72,6 +84,8 @@ public class ConfigurationPresenter {
 
         SimulationPresenter presenter = loader.getController();
         presenter.setSimulation(simulation);
+        presenter.setMap(simulation.getMap());
+        simulation.getMap().addObserver(presenter);
 
         var scene = new Scene(viewRoot);
         secondaryStage.setScene(scene);
@@ -143,7 +157,8 @@ public class ConfigurationPresenter {
         }
     }
 
-    public void onConfirmButtonClicked() {
+    @FXML
+    private void onConfirmButtonClicked() {
         List<String> parameters = new ArrayList<>();
         String option = parameters_sets.getValue();
         if (Objects.equals(option, "My configuration")){
@@ -176,8 +191,6 @@ public class ConfigurationPresenter {
             }
         }
         else {
-
-
             for (List<String> row : records) {
                 if (Objects.equals(row.get(0), option)) {
                     parameters.addAll(row);

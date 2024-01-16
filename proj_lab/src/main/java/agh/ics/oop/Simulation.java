@@ -132,10 +132,7 @@ public class Simulation implements Runnable{
     }
     @Override
     public void run() {
-        startRunning();
-        while(true) { // na razie daje tu losowa liczbe jako liczbe wykonan
-
-
+        while(isRunning) {
             System.out.println("Dzień: "+this.dayCounter);
             if(this.dayCounter%25 == 0) printStatistics();
 
@@ -159,11 +156,6 @@ public class Simulation implements Runnable{
                 try {
                     if (isRunning) {
                         Thread.sleep(700); // to jest niepewne
-                    }
-                    else{
-                        while (!isRunning){
-                            Thread.sleep(100);
-                        }
                     }
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
