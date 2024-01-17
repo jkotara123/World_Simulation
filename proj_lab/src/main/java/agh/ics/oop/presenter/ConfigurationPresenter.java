@@ -1,8 +1,9 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.EnergyParameters;
+import agh.ics.oop.parameters.EnergyParameters;
+import agh.ics.oop.model.observers.FileStatsWriter;
 import agh.ics.oop.Simulation;
-import agh.ics.oop.SimulationParameters;
+import agh.ics.oop.parameters.SimulationParameters;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -21,6 +22,8 @@ import java.util.Objects;
 
 
 public class ConfigurationPresenter {
+    @FXML
+    private CheckBox statsSave;
     @FXML
     private TextField heightTextField;
     @FXML
@@ -76,7 +79,7 @@ public class ConfigurationPresenter {
         this.simulation = simulation;
     }
 
-    private void startSimulation() throws IOException {
+    private void startSimulation(String mapName) throws IOException {
         Stage secondaryStage = new Stage();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
@@ -85,11 +88,15 @@ public class ConfigurationPresenter {
         SimulationPresenter presenter = loader.getController();
         presenter.setSimulation(simulation);
         presenter.setMap(simulation.getMap());
-        simulation.getMap().addObserver(presenter);
+        simulation.addObserver(presenter);
+        if (statsSave.isSelected()){
+            FileStatsWriter fileStatsWriter = new FileStatsWriter(mapName);
+            simulation.addObserver(fileStatsWriter);
+        }
 
         var scene = new Scene(viewRoot);
         secondaryStage.setScene(scene);
-        secondaryStage.setTitle("Simulation app");
+        secondaryStage.setTitle(mapName + " simulation");
         secondaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
         secondaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
 
@@ -214,10 +221,11 @@ public class ConfigurationPresenter {
             throw new RuntimeException(e);
         }
         try {
-            startSimulation();
+            startSimulation(parameters.get(0));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
 
     }
 }

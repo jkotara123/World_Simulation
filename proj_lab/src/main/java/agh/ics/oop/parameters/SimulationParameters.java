@@ -1,4 +1,4 @@
-package agh.ics.oop;
+package agh.ics.oop.parameters;
 
 
 import agh.ics.oop.model.Vector2d;

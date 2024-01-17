@@ -3,13 +3,16 @@ package agh.ics.oop;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.elements.*;
 import agh.ics.oop.model.maps.*;
+import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.util.RandomPositionsGenerator;
+import agh.ics.oop.parameters.SimulationParameters;
 
 import java.io.FileNotFoundException;
 import java.util.*;
 
 
-public class Simulation implements Runnable{
+public class Simulation implements Runnable {
+    private final List<MapChangeListener> observers = new ArrayList<>();
     private final ArrayList<Animal> animalsAlive = new ArrayList<>(0);
     private final List<Animal> animalsDead = new ArrayList<>();
     private final Map<Genome,List<Animal>> genomeList = new HashMap<>();
@@ -24,6 +27,7 @@ public class Simulation implements Runnable{
     private Genome mostPopularGenome;
     private float averageChildrenCount;
     private int deadAnimalsCount;
+  
     public Simulation(SimulationParameters simulationParameters) throws FileNotFoundException {
         this.simulationParameters = simulationParameters;
         map = simulationParameters.getMap();
@@ -39,6 +43,18 @@ public class Simulation implements Runnable{
             this.map.placeGrass(grass);
         }
         this.updateStats();
+    }
+    public void addObserver(MapChangeListener observer){
+        observers.add(observer);
+    }
+
+    private void mapChanged(String message){
+        for(MapChangeListener observer: observers){
+            observer.mapChanged(this,message);
+        }
+    }
+    public boolean isRunning(){
+        return isRunning;
     }
 
     public void placeAnimals(){
@@ -149,6 +165,10 @@ public class Simulation implements Runnable{
         updateAverageLifeSpan();
         updateMostPopularGenome();
     }
+    public int getAliveAnimalsCount(){
+        return animalsAlive.size();
+    }
+
     public List<Animal> animalsWithMostPopularGenome(){
         return genomeList.get(this.mostPopularGenome);
     }
@@ -161,6 +181,7 @@ public class Simulation implements Runnable{
     @Override
     public void run() {
         while(isRunning) {
+            mapChanged("Dzień: "+this.dayCounter);
             System.out.println("Dzień: "+this.dayCounter);
 //            if(this.dayCounter%25 == 0) System.out.println(getStatistics());
 
@@ -178,6 +199,8 @@ public class Simulation implements Runnable{
 
             //nowe rosliny
             map.growGrass(simulationParameters.dailyGrassGrowth());
+
+
 
             this.dayCounter+=1;
 

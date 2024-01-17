@@ -1,5 +1,6 @@
 package agh.ics.oop.model.elements;
 
+import agh.ics.oop.parameters.SimulationParameters;
 import agh.ics.oop.EnergyParameters;
 import agh.ics.oop.SimulationParameters;
 import agh.ics.oop.model.Vector2d;
@@ -66,6 +67,11 @@ public class Animal implements WorldElement,Comparable<Animal> {
     @Override
     public boolean isAt(Vector2d position){
         return this.position.equals(position);
+    }
+
+    @Override
+    public boolean isAnAnimal() {
+        return true;
     }
 
     private void turn(){

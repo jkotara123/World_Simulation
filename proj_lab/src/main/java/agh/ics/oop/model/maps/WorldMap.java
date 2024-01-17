@@ -1,11 +1,10 @@
 package agh.ics.oop.model.maps;
 
-import agh.ics.oop.EnergyParameters;
+import agh.ics.oop.parameters.EnergyParameters;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Grass;
 import agh.ics.oop.model.elements.WorldElement;
-import agh.ics.oop.model.observers.MapChangeListener;
 
 import java.util.List;
 import java.util.Map;
@@ -17,8 +16,8 @@ public interface WorldMap extends MoveValidator {
     List<WorldElement> getElements(); //zwraca liste zwierzat i roslin (przydatne w rysowaniu bedzie (chyba) )
     EnergyParameters getEnergyParameters();
 
-    void addObserver(MapChangeListener observer);
-    void removeObserver(MapChangeListener observer);
+//    void addObserver(MapChangeListener observer);
+//    void removeObserver(MapChangeListener observer);
 
     void placeGrass(Grass grass); // dodaje trawke na swoim miejscu
     void removeGrass(Grass grass); //usuwa trawke

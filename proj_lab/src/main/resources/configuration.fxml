@@ -159,6 +159,7 @@
         <VBox alignment="CENTER">
             <Label fx:id="errorMessage" alignment="CENTER" />
             <HBox alignment="CENTER">
+                <CheckBox fx:id="statsSave" text = "Save statistics in a file" />
                 <Button alignment="CENTER" onAction="#onConfirmButtonClicked" text="Confirm">
                <HBox.margin>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

@@ -1,7 +1,6 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.Simulation;
-import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.maps.Boundary;
@@ -18,6 +17,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.input.MouseEvent;
+
 
 import java.text.DecimalFormat;
 import javafx.scene.image.Image;
@@ -28,11 +29,16 @@ import java.util.concurrent.Executors;
 
 public class SimulationPresenter implements MapChangeListener {
 
-    public VBox simBottom;
     @FXML
-    public Button animalsWithBestGenome;
+    private Button animalsWithBestGenome;
     @FXML
-    public Button equatorGrass;
+    private Button equatorGrass;
+    @FXML
+    private Button stopButton;
+    @FXML
+    private Button runButton;
+    @FXML
+    private VBox animalStatisticsBox;
     @FXML
     private GridPane mapGrid;
     private WorldMap map;
@@ -42,9 +48,10 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private Label dayCounter;
     @FXML
-    public Label simulationStatistics;
+    private Label simulationStatistics;
     private Animal followedAnimal = null;
-    private static int CELLSIZE = 45;
+    private static final int CELLSIZE = 45;
+
 
     private static final DecimalFormat dfSharp = new DecimalFormat("#.##");
 
@@ -65,13 +72,14 @@ public class SimulationPresenter implements MapChangeListener {
     }
   
     @Override
-    public void mapChanged(WorldMap worldMap, String message) {
+    public void mapChanged(Simulation simulation, String message) {
         Platform.runLater(() -> {
             this.showDayCounter();
             this.showStatistics();
             this.drawMap();
         });
     }
+
     private void clearGrid() {
         mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0)); // hack to retain visible grid lines
         mapGrid.getColumnConstraints().clear();
@@ -100,7 +108,10 @@ public class SimulationPresenter implements MapChangeListener {
         dayCounter.setText("Day "+simulation.getDayCounter());
     }
     private void showStatistics(){
-        simulationStatistics.setText("Average energy: "+dfSharp.format(simulation.getAverageEnergy())+'\n'+
+        simulationStatistics.setText("Alive animals count: "+simulation.getAliveAnimalsCount()+"\n"+
+                "Grass count: "+simulation.getMap().countGrass()+"\n"+
+                "Empty positions:  "+simulation.getMap().emptyPositions().size()+"\n"+
+                "Average energy: "+dfSharp.format(simulation.getAverageEnergy())+'\n'+
                 "Average children count: "+dfSharp.format(simulation.getAverageChildrenCount())+"\n"+
                 "Dead animals count: "+simulation.getDeadAnimalsCount()+"\n"+
                 "Average lifespan: "+dfSharp.format(simulation.getAverageLifespan())+"\n"
@@ -111,6 +122,11 @@ public class SimulationPresenter implements MapChangeListener {
             int newX= elem.getPosition().x()-bounds.lowerLeft().x() + 1;
             int newY= height - (elem.getPosition().y()-bounds.lowerLeft().y());
             Label label = new Label("");
+            if (elem.isAnAnimal()) {
+                label.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                        startFollowing((Animal) elem);
+                });
+            }
             Image image = elem.toImage(simulation.getSimulationParameters().energyParameters(),CELLSIZE);
             ImageView img = new ImageView(image);
 
@@ -167,13 +183,31 @@ public class SimulationPresenter implements MapChangeListener {
   
         animalsWithBestGenome.setVisible(true);
         equatorGrass.setVisible(true);
+        runButton.setVisible(true);
+        stopButton.setVisible(false);
 
     }
     public void runSimulation(){
         simulation.startRunning();
         executorService.submit(simulation);
+
         animalsWithBestGenome.setVisible(false);
         equatorGrass.setVisible(false);
+        stopButton.setVisible(true);
+        runButton.setVisible(false);
         }
+    @FXML
+    private void stopFollowing() {
+        followedAnimal = null;
+        animalStatisticsBox.setVisible(false);
+
     }
+    private void startFollowing(Animal animal){
+        if (!simulation.isRunning()){
+            followedAnimal = animal;
+            animalStatisticsBox.setVisible(true);
+        }
+
+    }
+}
 

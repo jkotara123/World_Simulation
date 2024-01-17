@@ -29,6 +29,9 @@ public class Grass implements WorldElement {
     }
 
     @Override
+    public boolean isAnAnimal() {
+        return false;
+    }
     public Image toImage(EnergyParameters parameters, int CELLSIZE) {
         return new Image("images/grass.png",CELLSIZE*3/5,CELLSIZE*3/5,false,true);
     }

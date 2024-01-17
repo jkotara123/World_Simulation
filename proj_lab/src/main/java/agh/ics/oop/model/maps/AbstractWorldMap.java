@@ -1,12 +1,10 @@
 package agh.ics.oop.model.maps;
 
-import agh.ics.oop.EnergyParameters;
+import agh.ics.oop.parameters.EnergyParameters;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Grass;
 import agh.ics.oop.model.elements.WorldElement;
-import agh.ics.oop.model.enums.MapDirection;
-import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.util.RandomPositionsGenerator;
 
 import java.util.*;
@@ -15,7 +13,7 @@ import static java.lang.Math.min;
 import static java.lang.Math.round;
 
 public abstract class AbstractWorldMap implements WorldMap {
-    private final List<MapChangeListener> observers = new ArrayList<>();
+//    private final List<MapChangeListener> observers = new ArrayList<>();
 
     protected final Map<Vector2d, List<Animal>> animalsAlive = new HashMap<>();
     protected final Map<Vector2d, Grass> grasses = new HashMap<>();
@@ -58,6 +56,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         return grasses;
     }
 
+
   
       @Override
     public List<WorldElement> getElements() {
@@ -73,25 +72,27 @@ public abstract class AbstractWorldMap implements WorldMap {
         return energyParameters;
     }
 
-    public void addObserver(MapChangeListener observer){
-        observers.add(observer);
-    }
+//    public void addObserver(MapChangeListener observer){
+//        observers.add(observer);
+//    }
+//
+//    public void removeObserver(MapChangeListener observer){
+//        observers.remove(observer);
+//    }
 
-    public void removeObserver(MapChangeListener observer){
-        observers.remove(observer);
-    }
-
-    private void mapChanged(String message){
-        for(MapChangeListener observer: observers){
-            observer.mapChanged(this,message);
-        }
-    }
+//    private void mapChanged(String message){
+//        for(MapChangeListener observer: observers){
+//            observer.mapChanged(this,message);
+//        }
+//    }
   
     @Override
     public void placeAnimal(Animal animal){
         animalsAlive.computeIfAbsent(animal.getPosition(),position->new ArrayList<>());
         animalsAlive.get(animal.getPosition()).add(animal);
     }
+
+
     @Override
     public void removeAnimal(Animal animal) {
         animalsAlive.get(animal.getPosition()).remove(animal);
@@ -111,20 +112,20 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     @Override
     public void move(Animal animal) {
-        Vector2d oldPosition = animal.getPosition();
-        MapDirection oldOrientation = animal.getOrientation();
+//        Vector2d oldPosition = animal.getPosition();
+//        MapDirection oldOrientation = animal.getOrientation();
 
         this.removeAnimal(animal);
         animal.move(this);
         this.placeAnimal(animal);
 
-        if (!animal.getPosition().equals(oldPosition)){
-            mapChanged("Animal moved from " + oldPosition + " to " + animal.getPosition());
-        }
-        if (!animal.getOrientation().equals(oldOrientation)){
-            mapChanged("Animal on position " + animal.getPosition() +
-                    " changed orientation from " + oldOrientation + " to " + animal.getOrientation());
-        }
+//        if (!animal.getPosition().equals(oldPosition)){
+//            mapChanged("Animal moved from " + oldPosition + " to " + animal.getPosition());
+//        }
+//        if (!animal.getOrientation().equals(oldOrientation)){
+//            mapChanged("Animal on position " + animal.getPosition() +
+//                    " changed orientation from " + oldOrientation + " to " + animal.getOrientation());
+//        }
     }
 
     @Override

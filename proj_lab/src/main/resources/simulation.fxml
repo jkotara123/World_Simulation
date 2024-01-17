@@ -4,11 +4,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <BorderPane minHeight="400" minWidth="600" stylesheets="style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <top>
         <VBox>
-            <Label fx:id="dayCounter" maxWidth="Infinity" alignment="CENTER" textAlignment="CENTER" />
+            <Label fx:id="dayCounter" alignment="CENTER" maxWidth="Infinity" textAlignment="CENTER" />
         </VBox>
     </top>
     <center>
@@ -16,20 +15,31 @@
             <HBox spacing="20.0">
                 <VBox>
 
-                    <Label styleClass="titleLabel" fx:id="StatTitle" text = "Simulation statistics:"/>
-                    <Label fx:id="simulationStatistics"/>
-                    <Button fx:id="animalsWithBestGenome" onAction="#onAnimalsWithBestGenomeClicked" text = "Highlight animals" visible="false"/>
-                    <Button fx:id="equatorGrass" onAction="#onEquatorGrassClicked" text = "Highlight equator" visible="false"/>
+                    <Label fx:id="StatTitle" styleClass="titleLabel" text="Simulation statistics:">
+                  <VBox.margin>
+                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </VBox.margin>
+                  <padding>
+                     <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                  </padding></Label>
+                    <Label fx:id="simulationStatistics" />
+                    <Button fx:id="animalsWithBestGenome" onAction="#onAnimalsWithBestGenomeClicked" text="Highlight animals" visible="false" />
+                    <Button fx:id="equatorGrass" onAction="#onEquatorGrassClicked" text="Highlight equator" visible="false" />
                 </VBox>
                 <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true" />
+                <VBox fx:id="animalStatisticsBox" visible="false">
+                    <Label styleClass="titleLabel" text="Chosen animal statistics" />
+                    <Label fx:id="animalStatistics" />
+                    <Button onAction="#stopFollowing" text="stop following" />
+                </VBox>
             </HBox>
         </VBox>
     </center>
     <bottom>
-        <VBox fx:id="simBottom">
+        <VBox>
             <HBox alignment="TOP_CENTER" spacing="20.0">
-                <Button onAction="#stopSimulation" text="Stop" />
-                <Button onAction="#runSimulation" text="Resume" />
+                <Button fx:id="stopButton" onAction="#stopSimulation" text="Stop" />
+                <Button fx:id="runButton" onAction="#runSimulation" text="Resume" visible="false" />
             <VBox.margin>
                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </VBox.margin>
