@@ -19,6 +19,11 @@ public class Simulation implements Runnable{
     private boolean isRunning = false;
     private int dayCounter = 1;
 
+    private float averageEnergy;
+    private float averageLifespan;
+    private Genome mostPopularGenome;
+    private float averageChildrenCount;
+    private int deadAnimalsCount;
     public Simulation(SimulationParameters simulationParameters) throws FileNotFoundException {
         this.simulationParameters = simulationParameters;
         map = simulationParameters.getMap();
@@ -33,6 +38,7 @@ public class Simulation implements Runnable{
             Grass grass = new Grass(position);
             this.map.placeGrass(grass);
         }
+        this.updateStats();
     }
 
     public void placeAnimals(){
@@ -89,8 +95,26 @@ public class Simulation implements Runnable{
     public int getDayCounter(){
         return dayCounter;
     }
+    public float getAverageEnergy() {
+        return averageEnergy;
+    }
+    public float getAverageLifespan() {
+        return averageLifespan;
+    }
+    public Genome getMostPopularGenome() {
+        return mostPopularGenome;
+    }
+    public float getAverageChildrenCount() {
+        return averageChildrenCount;
+    }
+    public int getDeadAnimalsCount() {
+        return deadAnimalsCount;
+    }
+    public SimulationParameters getSimulationParameters(){
+        return this.simulationParameters;
+    }
 
-    public Genome mostPopularGenome() {
+    private void updateMostPopularGenome() {
         Genome resGenome = new DefaultGenome(1);
         int currMaxSize = 0;
         for(Genome genome : genomeList.keySet() ){
@@ -99,31 +123,34 @@ public class Simulation implements Runnable{
                 resGenome = genome;
             }
         }
-        return resGenome;
+        this.mostPopularGenome=resGenome;
     }
-
-    public float averageEnergy() {
-        if (animalsAlive.isEmpty()) return 0;
-        return (float) animalsAlive.stream().mapToInt(Animal::getEnergy).sum()/animalsAlive.size();
+    private void updateAverageEnergy() {
+        if (animalsAlive.isEmpty()) this.averageEnergy = 0;
+        else this.averageEnergy = (float)animalsAlive.stream().mapToInt(Animal::getEnergy).sum()/animalsAlive.size();
     }
-
-
-    public float averageLifeSpan() {
-        if (animalsDead.isEmpty()) return 0;
-        return (float) animalsDead.stream().mapToInt(Animal::getLifeSpan).sum()/animalsDead.size();
+    private void updateAverageLifeSpan() {
+        if (animalsDead.isEmpty()) this.averageLifespan= 0;
+        else this.averageLifespan =  (float) animalsDead.stream().mapToInt(Animal::getLifeSpan).sum()/animalsDead.size();
     }
-
-    public float averageChildrenNumber() {
-        return (float) animalsAlive.stream()
+    private void updateAverageChildrenCount() {
+        if(animalsAlive.isEmpty()) this.averageChildrenCount = 0;
+        else this.averageChildrenCount = (float) animalsAlive.stream()
                 .mapToInt(animal -> animal.getChildren().size())
                 .sum() /animalsAlive.size();
     }
-    public int getDeadAnimalsCount(){
-        return animalsDead.size();
+    private void updateDeadAnimalsCount(){
+        this.deadAnimalsCount = animalsDead.size();
     }
-
+    public void updateStats(){
+        updateDeadAnimalsCount();
+        updateAverageChildrenCount();
+        updateAverageEnergy();
+        updateAverageLifeSpan();
+        updateMostPopularGenome();
+    }
     public List<Animal> animalsWithMostPopularGenome(){
-        return genomeList.get(this.mostPopularGenome());
+        return genomeList.get(this.mostPopularGenome);
     }
     public void startRunning(){
         this.isRunning = true;
@@ -154,9 +181,11 @@ public class Simulation implements Runnable{
 
             this.dayCounter+=1;
 
+            this.updateStats();
+
                 try {
                     if (isRunning) {
-                        Thread.sleep(700); // to jest niepewne
+                        Thread.sleep(1300);
                     }
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);

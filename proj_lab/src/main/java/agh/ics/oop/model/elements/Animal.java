@@ -1,14 +1,18 @@
 package agh.ics.oop.model.elements;
 
+import agh.ics.oop.EnergyParameters;
 import agh.ics.oop.SimulationParameters;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.maps.WorldMap;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+
+import javafx.scene.image.Image;
 
 public class Animal implements WorldElement,Comparable<Animal> {
     private MapDirection orientation;
@@ -143,5 +147,14 @@ public class Animal implements WorldElement,Comparable<Animal> {
     }
     public int getGrassEaten(){
         return this.grassEaten;
+    }
+    public Image toImage(EnergyParameters parameters, int CELLSIZE){
+        String color ="";
+        if(this.energy<=3*parameters.energyToMove()) color+="red";
+        else if(this.energy<=10*parameters.energyToMove()) color+="orange";
+        else if(this.energy <=parameters.startingEnergy()) color+="yellow";
+        else if(this.energy <=parameters.energyToFull()) color+="lightGreen";
+        else color+="green";
+        return new Image("images/"+color+this.orientation.toString()+".png",CELLSIZE*2/3,CELLSIZE*2/3,false,true);
     }
 }
