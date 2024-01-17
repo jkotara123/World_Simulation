@@ -26,4 +26,9 @@ public class Grass implements WorldElement {
         return this.position.equals(position);
     }
 
+    @Override
+    public boolean isAnAnimal() {
+        return false;
+    }
+
 }

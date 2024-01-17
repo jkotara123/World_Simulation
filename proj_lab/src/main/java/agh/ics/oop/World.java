@@ -2,7 +2,6 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.elements.Genome;
-import agh.ics.oop.model.observers.ConsoleMapDisplay;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

@@ -85,7 +85,7 @@ public class ConfigurationPresenter {
         SimulationPresenter presenter = loader.getController();
         presenter.setSimulation(simulation);
         presenter.setMap(simulation.getMap());
-        simulation.getMap().addObserver(presenter);
+        simulation.addObserver(presenter);
 
         var scene = new Scene(viewRoot);
         secondaryStage.setScene(scene);

@@ -7,4 +7,5 @@ public interface WorldElement {
     @Override
     String toString();
     boolean isAt(Vector2d position);
+    boolean isAnAnimal();
 }

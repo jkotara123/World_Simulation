@@ -64,6 +64,11 @@ public class Animal implements WorldElement,Comparable<Animal> {
         return this.position.equals(position);
     }
 
+    @Override
+    public boolean isAnAnimal() {
+        return true;
+    }
+
     private void turn(){
         orientation = orientation.turn(genome.getCurrent());
     }

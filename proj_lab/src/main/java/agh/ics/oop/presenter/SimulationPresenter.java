@@ -1,7 +1,6 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.Simulation;
-import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.maps.Boundary;
@@ -9,6 +8,7 @@ import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.elements.WorldElement;
 import agh.ics.oop.model.maps.WorldMap;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -17,11 +17,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import java.awt.*;
 import java.text.DecimalFormat;
+import javafx.scene.input.MouseEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,11 +27,14 @@ import java.util.concurrent.Executors;
 
 public class SimulationPresenter implements MapChangeListener {
 
-    public VBox simBottom;
+    @FXML
+    private VBox simBottom;
     @FXML
     public Button animalsWithBestGenome;
     @FXML
     public Button equatorGrass;
+    @FXML
+    private VBox animalStatisticsBox;
     @FXML
     private GridPane mapGrid;
     private WorldMap map;
@@ -66,7 +67,7 @@ public class SimulationPresenter implements MapChangeListener {
     }
   
     @Override
-    public void mapChanged(WorldMap worldMap, String message) {
+    public void mapChanged(Simulation simulation, String message) {
         Platform.runLater(() -> {
             this.showDayCounter();
             this.showStatistics();
@@ -112,13 +113,17 @@ public class SimulationPresenter implements MapChangeListener {
             int newX= elem.getPosition().x()-bounds.lowerLeft().x() + 1;
             int newY= height - (elem.getPosition().y()-bounds.lowerLeft().y());
             Label label = new Label(elem.toString());
+            if (elem.isAnAnimal()) {
+                label.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                        startFollowing((Animal) elem);
+                });
+            }
 
             label.setPrefHeight(CELLSIZE);
             label.setPrefWidth(CELLSIZE);
 
             mapGrid.add(label,newX,newY);
             GridPane.setHalignment(label, HPos.CENTER);
-            label.setBackground(new Background(new BackgroundFill(Color.BLUE,CornerRadii.EMPTY, Insets.EMPTY)));
         }
     }
     private Label getLabelOnPosition(int x,int y){
@@ -175,5 +180,18 @@ public class SimulationPresenter implements MapChangeListener {
         animalsWithBestGenome.setVisible(false);
         equatorGrass.setVisible(false);
         }
+    @FXML
+    private void stopFollowing() {
+        followedAnimal = null;
+        animalStatisticsBox.setVisible(false);
+
     }
+    private void startFollowing(Animal animal){
+        if (!simulation.isRunning()){
+            followedAnimal = animal;
+            animalStatisticsBox.setVisible(true);
+        }
+
+    }
+}
 

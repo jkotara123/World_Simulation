@@ -22,6 +22,11 @@
                     <Button fx:id="equatorGrass" onAction="#onEquatorGrassClicked" text = "Highlight equator" visible="false"/>
                 </VBox>
                 <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true" />
+                <VBox fx:id="animalStatisticsBox" visible="false">
+                    <Label styleClass="titleLabel" text = "Chosen animal statistics"/>
+                    <Label fx:id = "animalStatistics"/>
+                    <Button onAction="#stopFollowing" text = "stop following"/>
+                </VBox>
             </HBox>
         </VBox>
     </center>

@@ -3,13 +3,15 @@ package agh.ics.oop;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.elements.*;
 import agh.ics.oop.model.maps.*;
+import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.util.RandomPositionsGenerator;
 
 import java.io.FileNotFoundException;
 import java.util.*;
 
 
-public class Simulation implements Runnable{
+public class Simulation implements Runnable {
+    private final List<MapChangeListener> observers = new ArrayList<>();
     private final ArrayList<Animal> animalsAlive = new ArrayList<>(0);
     private final List<Animal> animalsDead = new ArrayList<>();
     private final Map<Genome,List<Animal>> genomeList = new HashMap<>();
@@ -18,6 +20,8 @@ public class Simulation implements Runnable{
     private final RandomPositionsGenerator randomPositionsGenerator = new RandomPositionsGenerator();
     private boolean isRunning = false;
     private int dayCounter = 1;
+
+
 
     public Simulation(SimulationParameters simulationParameters) throws FileNotFoundException {
         this.simulationParameters = simulationParameters;
@@ -33,6 +37,18 @@ public class Simulation implements Runnable{
             Grass grass = new Grass(position);
             this.map.placeGrass(grass);
         }
+    }
+    public void addObserver(MapChangeListener observer){
+        observers.add(observer);
+    }
+
+    private void mapChanged(String message){
+        for(MapChangeListener observer: observers){
+            observer.mapChanged(this,message);
+        }
+    }
+    public boolean isRunning(){
+        return isRunning;
     }
 
     public void placeAnimals(){
@@ -133,6 +149,7 @@ public class Simulation implements Runnable{
     }
     @Override
     public void run() {
+        mapChanged("Dzień: "+this.dayCounter);
         while(isRunning) {
             System.out.println("Dzień: "+this.dayCounter);
 //            if(this.dayCounter%25 == 0) System.out.println(getStatistics());
@@ -151,6 +168,8 @@ public class Simulation implements Runnable{
 
             //nowe rosliny
             map.growGrass(simulationParameters.dailyGrassGrowth());
+
+            mapChanged("Dzień: "+this.dayCounter);
 
             this.dayCounter+=1;
 
