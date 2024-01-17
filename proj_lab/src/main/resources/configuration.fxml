@@ -6,34 +6,36 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="700.0" minWidth="700.0" stylesheets="style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.ConfigurationPresenter">
+<BorderPane minHeight="600.0" minWidth="700.0" stylesheets="style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.ConfigurationPresenter">
 
     <top>
-        <HBox fx:id="configTop" prefHeight="68.0" prefWidth="0.0">
+        <HBox prefHeight="68.0" prefWidth="0.0">
             <Label styleClass="headerLabel" text="Wprowadź konfiguracje">
             <HBox.margin>
-               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </HBox.margin></Label>
 
         </HBox>
     </top>
     <center>
         <VBox>
-        <VBox fx:id="parameters_sets_box" alignment="TOP_CENTER">
+        <VBox alignment="TOP_CENTER">
             <ComboBox fx:id="parameters_sets">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Configuration1" />
-                        <String fx:value="Configuration2" />
+<!--                        <String fx:value="Configuration1" />-->
+<!--                        <String fx:value="Configuration2" />-->
                         <String fx:value="My configuration" />
                     </FXCollections>
                 </items>
             </ComboBox>
-            <Button onAction="#onConfirmConfigButton" text="Confirm" />
+            <VBox.margin>
+               <Insets />
+            </VBox.margin>
         </VBox>
-        <VBox fx:id="configCenter" alignment="CENTER" visible="false">
-            <HBox alignment="CENTER" spacing="40.0">
-                <VBox alignment="TOP_CENTER" prefHeight="25.0" prefWidth="250.0" spacing="3.0">
+        <VBox alignment="CENTER">
+            <HBox alignment="CENTER" spacing="30.0">
+                <VBox alignment="TOP_CENTER" prefHeight="25.0" prefWidth="250.0" spacing="2.0">
                     <Label alignment="CENTER" text="Choose map variant:" textAlignment="CENTER" />
                     <ComboBox fx:id="mapVariantComboBox">
                         <items>
@@ -43,6 +45,11 @@
                             </FXCollections>
                         </items>
                     </ComboBox>
+                    <Label text="Configuration Name" />
+                    <TextField fx:id="nameField" promptText="map width">
+                        <VBox.margin>
+                            <Insets bottom="6.0" />
+                        </VBox.margin></TextField>
                     <Label text="Map height" />
                     <TextField fx:id="heightTextField" prefHeight="25.0" prefWidth="200.0" promptText="map height">
                   <VBox.margin>
@@ -77,10 +84,10 @@
                   <Insets />
                </HBox.margin>
                <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
                </padding>
                 </VBox>
-                <VBox alignment="TOP_CENTER" opacity="0.96" prefHeight="25.0" prefWidth="250.0" spacing="3.0">
+                <VBox alignment="TOP_CENTER" opacity="0.96" prefHeight="25.0" prefWidth="250.0" spacing="2.0">
                     <Label text="Choose mutation variant:" />
                     <ComboBox fx:id="mapMutationComboBox">
                         <items>
@@ -132,7 +139,7 @@
                   <Insets />
                </HBox.margin>
                <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
                </padding>
                 </VBox>
             <opaqueInsets>
@@ -149,13 +156,14 @@
         </VBox>
     </center>
     <bottom>
-        <VBox fx:id="configBottom" visible="false">
-            <Label fx:id="errorMessage" />
+        <VBox alignment="CENTER">
+            <Label fx:id="errorMessage" alignment="CENTER" />
             <HBox alignment="CENTER">
                 <Button alignment="CENTER" onAction="#onConfirmButtonClicked" text="Confirm">
                <HBox.margin>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </HBox.margin></Button>
+                <CheckBox fx:id="configSave" text="Save Configuration" />
             </HBox>
         </VBox>
     </bottom>

@@ -17,10 +17,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-
+import javafx.stage.Stage;
+import java.awt.*;
 import java.text.DecimalFormat;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class SimulationPresenter implements MapChangeListener {
@@ -34,6 +38,8 @@ public class SimulationPresenter implements MapChangeListener {
     private GridPane mapGrid;
     private WorldMap map;
     private Simulation simulation;
+
+    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
     @FXML
     private Label dayCounter;
     @FXML
@@ -57,8 +63,8 @@ public class SimulationPresenter implements MapChangeListener {
         this.clearGrid();
         createGrid(width, height, bounds);
         putElements(height, bounds);
-
     }
+  
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
@@ -106,10 +112,13 @@ public class SimulationPresenter implements MapChangeListener {
             int newX= elem.getPosition().x()-bounds.lowerLeft().x() + 1;
             int newY= height - (elem.getPosition().y()-bounds.lowerLeft().y());
             Label label = new Label(elem.toString());
+
             label.setPrefHeight(CELLSIZE);
             label.setPrefWidth(CELLSIZE);
+
             mapGrid.add(label,newX,newY);
             GridPane.setHalignment(label, HPos.CENTER);
+            label.setBackground(new Background(new BackgroundFill(Color.BLUE,CornerRadii.EMPTY, Insets.EMPTY)));
         }
     }
     private Label getLabelOnPosition(int x,int y){
@@ -150,26 +159,21 @@ public class SimulationPresenter implements MapChangeListener {
         }
     }
 
-    public void onSimulationStopButtonClicked(){
+
+    @FXML
+    private void stopSimulation(){
+        executorService.execute(simulation);
         simulation.stopRunning();
+  
         animalsWithBestGenome.setVisible(true);
         equatorGrass.setVisible(true);
-    }
-    public void onSimulationResumeButtonClicked(){
-        simulation.startRunning();
-        animalsWithBestGenome.setVisible(false);
-        equatorGrass.setVisible(false);
+
     }
     public void runSimulation(){
-            this.setMap(simulation.getMap());
-            map.addObserver(this);
-
-            try {
-                SimulationEngine engine = new SimulationEngine(new ArrayList<>(List.of(simulation)), 4);
-                engine.runAsync();
-            } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
-            }
+        simulation.startRunning();
+        executorService.submit(simulation);
+        animalsWithBestGenome.setVisible(false);
+        equatorGrass.setVisible(false);
         }
     }
 

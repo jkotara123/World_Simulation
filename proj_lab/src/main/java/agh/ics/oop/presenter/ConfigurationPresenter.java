@@ -3,16 +3,14 @@ package agh.ics.oop.presenter;
 import agh.ics.oop.EnergyParameters;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationParameters;
-import javafx.collections.ObservableArray;
-import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -23,30 +21,56 @@ import java.util.Objects;
 
 
 public class ConfigurationPresenter {
-    public TextField heightTextField;
-    public TextField widthTextField;
-    public Label errorMessage;
+    @FXML
+    private TextField heightTextField;
+    @FXML
+    private TextField widthTextField;
+    @FXML
+    private Label errorMessage;
+    @FXML
     public TextField startingGrassAmountTextField;
+    @FXML
     public TextField startingAnimalAmountTextField;
+    @FXML
     public TextField genomeLengthTextField;
+    @FXML
     public TextField dailyGrassGrowthTextField;
+    @FXML
     public TextField minChildrenMutationsTextField;
+    @FXML
     public TextField maxChildrenMutationsTextField;
+    @FXML
     public TextField energyFromEatingTextField;
+    @FXML
     public TextField energyToReproduceTextField;
+    @FXML
     public TextField energyToMoveTextField;
+    @FXML
     public TextField startingEnergyTextField;
+    @FXML
     public TextField energyToFullTextField;
+    @FXML
     public ComboBox<String> mapVariantComboBox;
+    @FXML
     public ComboBox<String> mapMutationComboBox;
-    public HBox configTop;
+    @FXML
     public ComboBox<String> parameters_sets;
-    public VBox configCenter;
-    public VBox parameters_sets_box;
-    public VBox configBottom;
+    @FXML
+    public TextField nameField;
+    @FXML
+    public CheckBox configSave;
 
     private Simulation simulation;
 
+    private List<List<String>> records;
+
+
+    public void loadRecords() {
+        records = getRecords();
+        for(List<String> row: records){
+            parameters_sets.getItems().add(row.get(0));
+        }
+    }
 
     private void setSimulation(Simulation simulation){
         this.simulation = simulation;
@@ -60,6 +84,8 @@ public class ConfigurationPresenter {
 
         SimulationPresenter presenter = loader.getController();
         presenter.setSimulation(simulation);
+        presenter.setMap(simulation.getMap());
+        simulation.getMap().addObserver(presenter);
 
         var scene = new Scene(viewRoot);
         secondaryStage.setScene(scene);
@@ -71,24 +97,26 @@ public class ConfigurationPresenter {
         presenter.runSimulation();
     }
 
-    public void onConfirmButtonClicked() {
-        String[] Parameters;
+    private SimulationParameters setParameters(List<String> parameters){
+        if (parameters.size()<16){
+            throw new IllegalArgumentException("All of the parameters have to be chosen");
+        }
 
-        String mapVariant = mapVariantComboBox.getValue();
-        String mutationVariant = mapMutationComboBox.getValue();
-        int width = Integer.parseInt(widthTextField.getText().split(" ")[0]);
-        int height = Integer.parseInt(heightTextField.getText().split(" ")[0]);
-        int startingGrassAmount = Integer.parseInt(startingGrassAmountTextField.getText().split(" ")[0]);
-        int startingAnimalAmount = Integer.parseInt(startingAnimalAmountTextField.getText().split(" ")[0]);
-        int genomeLength = Integer.parseInt(genomeLengthTextField.getText().split(" ")[0]);
-        int dailyGrassGrowth = Integer.parseInt(dailyGrassGrowthTextField.getText().split(" ")[0]);
-        int minChildrenMutations = Integer.parseInt(minChildrenMutationsTextField.getText().split(" ")[0]);
-        int maxChildrenMutations = Integer.parseInt(maxChildrenMutationsTextField.getText().split(" ")[0]);
-        int energyFromEating = Integer.parseInt(energyFromEatingTextField.getText().split(" ")[0]);
-        int energyToReproduce = Integer.parseInt(energyToReproduceTextField.getText().split(" ")[0]);
-        int energyToMove = Integer.parseInt(energyToMoveTextField.getText().split(" ")[0]);
-        int startingEnergy = Integer.parseInt(startingEnergyTextField.getText().split(" ")[0]);
-        int energyToFull = Integer.parseInt(energyToFullTextField.getText().split(" ")[0]);
+        int width = Integer.parseInt(parameters.get(1));
+        int height = Integer.parseInt(parameters.get(2));
+        String mapVariant = parameters.get(3);
+        String mutationVariant = parameters.get(4);
+        int startingGrassAmount = Integer.parseInt(parameters.get(5));
+        int startingAnimalAmount = Integer.parseInt(parameters.get(6));
+        int genomeLength = Integer.parseInt(parameters.get(7));
+        int dailyGrassGrowth = Integer.parseInt(parameters.get(8));
+        int minChildrenMutations = Integer.parseInt(parameters.get(9));
+        int maxChildrenMutations = Integer.parseInt(parameters.get(10));
+        int energyFromEating = Integer.parseInt(parameters.get(11));
+        int energyToReproduce = Integer.parseInt(parameters.get(12));
+        int energyToMove = Integer.parseInt(parameters.get(13));
+        int startingEnergy = Integer.parseInt(parameters.get(14));
+        int energyToFull = Integer.parseInt(parameters.get(15));
 
         SimulationParameters simulationParameters;
         try {
@@ -97,15 +125,92 @@ public class ConfigurationPresenter {
                     mapVariant, mutationVariant,
                     startingGrassAmount, startingAnimalAmount, genomeLength,
                     dailyGrassGrowth, minChildrenMutations, maxChildrenMutations, energyParameters);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             errorMessage.setText(e.getMessage());
             throw new RuntimeException(e);
         }
+        return simulationParameters;
+    }
+    private List<List<String>> getRecords(){
+        List<List<String>> records = new ArrayList<>();
+        File file = new File("config_sets.csv");
+        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                records.add(Arrays.asList(values));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return records;
+    }
+
+
+    private void printRecords() throws FileNotFoundException {
+
+        File file = new File("config_sets.csv");
+        try (PrintWriter pw = new PrintWriter(file)) {
+            for (List<String> row: records) {
+                pw.println(String.join(",", row));
+            }
+        }
+    }
+
+    @FXML
+    private void onConfirmButtonClicked() {
+        List<String> parameters = new ArrayList<>();
+        String option = parameters_sets.getValue();
+        if (Objects.equals(option, "My configuration")){
+
+            parameters.add(nameField.getText());
+            parameters.add(widthTextField.getText().split(" ")[0]);
+            parameters.add(heightTextField.getText().split(" ")[0]);
+            parameters.add(mapVariantComboBox.getValue());
+            parameters.add(mapMutationComboBox.getValue());
+            parameters.add(startingGrassAmountTextField.getText().split(" ")[0]);
+            parameters.add(startingAnimalAmountTextField.getText().split(" ")[0]);
+            parameters.add(genomeLengthTextField.getText().split(" ")[0]);
+            parameters.add(dailyGrassGrowthTextField.getText().split(" ")[0]);
+            parameters.add(minChildrenMutationsTextField.getText().split(" ")[0]);
+            parameters.add(maxChildrenMutationsTextField.getText().split(" ")[0]);
+            parameters.add(energyFromEatingTextField.getText().split(" ")[0]);
+            parameters.add(energyToReproduceTextField.getText().split(" ")[0]);
+            parameters.add(energyToMoveTextField.getText().split(" ")[0]);
+            parameters.add(startingEnergyTextField.getText().split(" ")[0]);
+            parameters.add(energyToFullTextField.getText().split(" ")[0]);
+            System.out.println(parameters);
+            if (configSave.isSelected()){
+
+                for (List<String> row : records) {
+                    if (Objects.equals(row.get(0), parameters.get(0))) {
+                        throw new IllegalArgumentException("There is already a configuration with that name");
+                    }
+                }
+                records.add(parameters);
+            }
+        }
+        else {
+            for (List<String> row : records) {
+                if (Objects.equals(row.get(0), option)) {
+                    parameters.addAll(row);
+                    break;
+                }
+            }
+        }
+        try {
+            printRecords();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        SimulationParameters simulationParameters = setParameters(parameters);
+
 
         try {
             Simulation simulation = new Simulation(simulationParameters);
             this.setSimulation(simulation);
-        }catch(FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
         try {
@@ -113,80 +218,6 @@ public class ConfigurationPresenter {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
-    }
-
-    public void onConfirmConfigButton() {
-        String option = parameters_sets.getValue();
-        if (Objects.equals(option, "My configuration")){
-            configCenter.setVisible(true);
-            configBottom.setVisible(true);
-            parameters_sets_box.setVisible(false);
-        }
-        else {
-
-            List<List<String>> records = new ArrayList<>();
-            try (InputStream inputStream = getClass().getResourceAsStream("/config_sets.csv");
-                 BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    String[] values = line.split(",");
-                    records.add(Arrays.asList(values));
-                    System.out.println("wo");
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            for (List<String> row: records){
-                System.out.println(row.get(0));
-                if(Objects.equals(row.get(0), option)){
-
-                    int width = Integer.parseInt(row.get(1));
-                    int height = Integer.parseInt(row.get(2));
-                    String mapVariant = row.get(3);
-                    String mutationVariant = row.get(4);
-                    int startingGrassAmount = Integer.parseInt(row.get(5));
-                    int startingAnimalAmount = Integer.parseInt(row.get(6));
-                    int genomeLength = Integer.parseInt(row.get(7));
-                    int dailyGrassGrowth = Integer.parseInt(row.get(8));
-                    int minChildrenMutations = Integer.parseInt(row.get(9));
-                    int maxChildrenMutations = Integer.parseInt(row.get(10));
-                    int energyFromEating = Integer.parseInt(row.get(11));
-                    int energyToReproduce = Integer.parseInt(row.get(12));
-                    int energyToMove = Integer.parseInt(row.get(13));
-                    int startingEnergy = Integer.parseInt(row.get(14));
-                    int energyToFull = Integer.parseInt(row.get(15));
-
-                    SimulationParameters simulationParameters;
-
-                    try {
-                        EnergyParameters energyParameters = new EnergyParameters(energyFromEating, energyToReproduce, energyToMove, startingEnergy, energyToFull);
-                        simulationParameters = new SimulationParameters(width, height,
-                                mapVariant, mutationVariant,
-                                startingGrassAmount, startingAnimalAmount, genomeLength,
-                                dailyGrassGrowth, minChildrenMutations, maxChildrenMutations, energyParameters);
-                    }catch (IllegalArgumentException e){
-                        errorMessage.setText(e.getMessage());
-                        throw new RuntimeException(e);
-                    }
-
-                    try {
-                        Simulation simulation = new Simulation(simulationParameters);
-                        this.setSimulation(simulation);
-                    }catch(FileNotFoundException e){
-                        throw new RuntimeException(e);
-                    }
-                    try {
-                        startSimulation();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }
-
-
 
     }
 }
