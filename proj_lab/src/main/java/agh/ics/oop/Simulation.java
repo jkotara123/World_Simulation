@@ -5,6 +5,7 @@ import agh.ics.oop.model.elements.*;
 import agh.ics.oop.model.maps.*;
 import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.util.RandomPositionsGenerator;
+import agh.ics.oop.parameters.SimulationParameters;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -138,6 +139,10 @@ public class Simulation implements Runnable {
         return animalsDead.size();
     }
 
+    public int getAliveAnimalsCount(){
+        return animalsAlive.size();
+    }
+
     public List<Animal> animalsWithMostPopularGenome(){
         return genomeList.get(this.mostPopularGenome());
     }
@@ -149,8 +154,8 @@ public class Simulation implements Runnable {
     }
     @Override
     public void run() {
-        mapChanged("Dzień: "+this.dayCounter);
         while(isRunning) {
+            mapChanged("Dzień: "+this.dayCounter);
             System.out.println("Dzień: "+this.dayCounter);
 //            if(this.dayCounter%25 == 0) System.out.println(getStatistics());
 
@@ -169,7 +174,7 @@ public class Simulation implements Runnable {
             //nowe rosliny
             map.growGrass(simulationParameters.dailyGrassGrowth());
 
-            mapChanged("Dzień: "+this.dayCounter);
+
 
             this.dayCounter+=1;
 

@@ -1,6 +1,6 @@
 package agh.ics.oop.model.elements;
 
-import agh.ics.oop.SimulationParameters;
+import agh.ics.oop.parameters.SimulationParameters;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.maps.WorldMap;

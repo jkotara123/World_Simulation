@@ -8,7 +8,6 @@ import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.elements.WorldElement;
 import agh.ics.oop.model.maps.WorldMap;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -28,11 +27,13 @@ import java.util.concurrent.Executors;
 public class SimulationPresenter implements MapChangeListener {
 
     @FXML
-    private VBox simBottom;
+    private Button animalsWithBestGenome;
     @FXML
-    public Button animalsWithBestGenome;
+    private Button equatorGrass;
     @FXML
-    public Button equatorGrass;
+    private Button stopButton;
+    @FXML
+    private Button runButton;
     @FXML
     private VBox animalStatisticsBox;
     @FXML
@@ -44,9 +45,9 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private Label dayCounter;
     @FXML
-    public Label simulationStatistics;
+    private Label simulationStatistics;
     private Animal followedAnimal = null;
-    private static int CELLSIZE = 30;
+    private static final int CELLSIZE = 30;
 
     private static final DecimalFormat dfSharp = new DecimalFormat("#.##");
 
@@ -74,6 +75,7 @@ public class SimulationPresenter implements MapChangeListener {
             this.drawMap();
         });
     }
+
     private void clearGrid() {
         mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0)); // hack to retain visible grid lines
         mapGrid.getColumnConstraints().clear();
@@ -102,7 +104,10 @@ public class SimulationPresenter implements MapChangeListener {
         dayCounter.setText("Day "+simulation.getDayCounter());
     }
     private void showStatistics(){
-        simulationStatistics.setText("Average energy: "+dfSharp.format(simulation.averageEnergy())+'\n'+
+        simulationStatistics.setText("Alive animals count: "+simulation.getAliveAnimalsCount()+"\n"+
+                "Grass count: "+simulation.getMap().countGrass()+"\n"+
+                "Empty positions:  "+simulation.getMap().emptyPositions().size()+"\n"+
+                "Average energy: "+dfSharp.format(simulation.averageEnergy())+'\n'+
                 "Average children count: "+dfSharp.format(simulation.averageChildrenNumber())+"\n"+
                 "Dead animals count: "+simulation.getDeadAnimalsCount()+"\n"+
                 "Average lifespan: "+dfSharp.format(simulation.averageLifeSpan())+"\n"
@@ -172,13 +177,18 @@ public class SimulationPresenter implements MapChangeListener {
   
         animalsWithBestGenome.setVisible(true);
         equatorGrass.setVisible(true);
+        runButton.setVisible(true);
+        stopButton.setVisible(false);
 
     }
     public void runSimulation(){
         simulation.startRunning();
         executorService.submit(simulation);
+
         animalsWithBestGenome.setVisible(false);
         equatorGrass.setVisible(false);
+        stopButton.setVisible(true);
+        runButton.setVisible(false);
         }
     @FXML
     private void stopFollowing() {

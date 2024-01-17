@@ -1,12 +1,10 @@
 package agh.ics.oop.model.maps;
 
-import agh.ics.oop.EnergyParameters;
+import agh.ics.oop.parameters.EnergyParameters;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Grass;
 import agh.ics.oop.model.elements.WorldElement;
-import agh.ics.oop.model.enums.MapDirection;
-import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.util.RandomPositionsGenerator;
 
 import java.util.*;
@@ -58,6 +56,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         return grasses;
     }
 
+
   
       @Override
     public List<WorldElement> getElements() {
@@ -92,6 +91,8 @@ public abstract class AbstractWorldMap implements WorldMap {
         animalsAlive.computeIfAbsent(animal.getPosition(),position->new ArrayList<>());
         animalsAlive.get(animal.getPosition()).add(animal);
     }
+
+
     @Override
     public void removeAnimal(Animal animal) {
         animalsAlive.get(animal.getPosition()).remove(animal);
@@ -111,8 +112,8 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     @Override
     public void move(Animal animal) {
-        Vector2d oldPosition = animal.getPosition();
-        MapDirection oldOrientation = animal.getOrientation();
+//        Vector2d oldPosition = animal.getPosition();
+//        MapDirection oldOrientation = animal.getOrientation();
 
         this.removeAnimal(animal);
         animal.move(this);

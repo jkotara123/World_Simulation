@@ -1,6 +1,6 @@
 package agh.ics.oop.model.maps;
 
-import agh.ics.oop.EnergyParameters;
+import agh.ics.oop.parameters.EnergyParameters;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.elements.Animal;
 
