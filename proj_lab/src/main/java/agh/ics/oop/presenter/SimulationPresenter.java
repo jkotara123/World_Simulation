@@ -15,13 +15,12 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import java.awt.*;
-import java.text.DecimalFormat;
 
-import java.util.ArrayList;
+import java.text.DecimalFormat;
+import javafx.scene.image.Image;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,7 +44,7 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     public Label simulationStatistics;
     private Animal followedAnimal = null;
-    private static int CELLSIZE = 30;
+    private static int CELLSIZE = 45;
 
     private static final DecimalFormat dfSharp = new DecimalFormat("#.##");
 
@@ -101,30 +100,32 @@ public class SimulationPresenter implements MapChangeListener {
         dayCounter.setText("Day "+simulation.getDayCounter());
     }
     private void showStatistics(){
-        simulationStatistics.setText("Average energy: "+dfSharp.format(simulation.averageEnergy())+'\n'+
-                "Average children count: "+dfSharp.format(simulation.averageChildrenNumber())+"\n"+
+        simulationStatistics.setText("Average energy: "+dfSharp.format(simulation.getAverageEnergy())+'\n'+
+                "Average children count: "+dfSharp.format(simulation.getAverageChildrenCount())+"\n"+
                 "Dead animals count: "+simulation.getDeadAnimalsCount()+"\n"+
-                "Average lifespan: "+dfSharp.format(simulation.averageLifeSpan())+"\n"
-                +"The most popular genome:\n"+simulation.mostPopularGenome());
+                "Average lifespan: "+dfSharp.format(simulation.getAverageLifespan())+"\n"
+                +"The most popular genome:\n"+simulation.getMostPopularGenome());
     }
     private void putElements(int height, Boundary bounds){
         for(WorldElement elem : this.map.getElements()){
             int newX= elem.getPosition().x()-bounds.lowerLeft().x() + 1;
             int newY= height - (elem.getPosition().y()-bounds.lowerLeft().y());
-            Label label = new Label(elem.toString());
+            Label label = new Label("");
+            Image image = elem.toImage(simulation.getSimulationParameters().energyParameters(),CELLSIZE);
+            ImageView img = new ImageView(image);
 
             label.setPrefHeight(CELLSIZE);
             label.setPrefWidth(CELLSIZE);
-
             mapGrid.add(label,newX,newY);
+            mapGrid.add(img,newX,newY);
+            GridPane.setHalignment(img, HPos.CENTER);
             GridPane.setHalignment(label, HPos.CENTER);
-            label.setBackground(new Background(new BackgroundFill(Color.BLUE,CornerRadii.EMPTY, Insets.EMPTY)));
         }
     }
     private Label getLabelOnPosition(int x,int y){
         for(Node node:mapGrid.getChildren()){
             if (GridPane.getColumnIndex(node) != null && GridPane.getColumnIndex(node) == x && GridPane.getRowIndex(node)==y){
-                return (Label) node;
+                if (node instanceof Label) return (Label) node;
             }
         }
         return null;
@@ -142,7 +143,6 @@ public class SimulationPresenter implements MapChangeListener {
     public void onEquatorGrassClicked(){
         Boundary bounds = this.map.getMapBorders();
         int height = bounds.upperRight().y() - bounds.lowerLeft().y()+1;
-        Boundary equator = map.getEquator();
         for(Vector2d position :  map.getEquator().allPositions()){
             int newX= position.x()-bounds.lowerLeft().x() + 1;
             int newY= height - (position.y()-bounds.lowerLeft().y());

@@ -1,7 +1,9 @@
 package agh.ics.oop.model.elements;
 
+import agh.ics.oop.EnergyParameters;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.maps.Boundary;
+import javafx.scene.image.Image;
 
 public class Grass implements WorldElement {
     private final Vector2d position;
@@ -24,6 +26,11 @@ public class Grass implements WorldElement {
     @Override
     public boolean isAt(Vector2d position) {
         return this.position.equals(position);
+    }
+
+    @Override
+    public Image toImage(EnergyParameters parameters, int CELLSIZE) {
+        return new Image("images/grass.png",CELLSIZE*3/5,CELLSIZE*3/5,false,true);
     }
 
 }

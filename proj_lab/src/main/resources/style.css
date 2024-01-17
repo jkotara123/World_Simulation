@@ -24,3 +24,7 @@ Button:hover{
 .titleLabel {
     -fx-font-size: 20;
 }
+
+Image {
+    -fx-background-color: transparent;
+}
