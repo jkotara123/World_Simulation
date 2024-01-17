@@ -4,10 +4,25 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+
 <BorderPane minHeight="400" minWidth="600" stylesheets="style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+    <top>
+        <VBox>
+            <Label fx:id="dayCounter" maxWidth="Infinity" alignment="CENTER" textAlignment="CENTER" />
+        </VBox>
+    </top>
     <center>
         <VBox alignment="CENTER">
-            <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true" />
+            <HBox spacing="20.0">
+                <VBox>
+
+                    <Label styleClass="titleLabel" fx:id="StatTitle" text = "Simulation statistics:"/>
+                    <Label fx:id="simulationStatistics"/>
+                    <Button fx:id="animalsWithBestGenome" onAction="#onAnimalsWithBestGenomeClicked" text = "Highlight animals" visible="false"/>
+                    <Button fx:id="equatorGrass" onAction="#onEquatorGrassClicked" text = "Highlight equator" visible="false"/>
+                </VBox>
+                <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true" />
+            </HBox>
         </VBox>
     </center>
     <bottom>

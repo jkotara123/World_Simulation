@@ -21,3 +21,6 @@ Button:hover{
     -fx-cursor: grab;
 }
 
+.titleLabel {
+    -fx-font-size: 20;
+}
