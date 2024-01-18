@@ -1,7 +1,6 @@
 package agh.ics.oop.model.observers;
 
 import agh.ics.oop.Simulation;
-import agh.ics.oop.model.observers.MapChangeListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;

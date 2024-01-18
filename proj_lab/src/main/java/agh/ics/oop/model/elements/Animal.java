@@ -2,12 +2,10 @@ package agh.ics.oop.model.elements;
 
 import agh.ics.oop.parameters.SimulationParameters;
 import agh.ics.oop.parameters.EnergyParameters;
-import agh.ics.oop.parameters.SimulationParameters;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.maps.WorldMap;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -121,7 +119,7 @@ public class Animal implements WorldElement,Comparable<Animal> {
     public int countDescendants(){
         if (this.children.isEmpty()) return 0;
         int counter = 0;
-        for(Animal child : children)    counter+=child.countDescendants();
+        for(Animal child : children)    counter+=child.countDescendants()+1;
         return counter;
     }
     @Override
@@ -161,6 +159,6 @@ public class Animal implements WorldElement,Comparable<Animal> {
         else if(this.energy <=parameters.startingEnergy()) color+="yellow";
         else if(this.energy <=parameters.energyToFull()) color+="lightGreen";
         else color+="green";
-        return new Image("images/"+color+this.orientation.toString()+".png",CELLSIZE*2/3,CELLSIZE*2/3,false,true);
+        return new Image("images/"+color+this.orientation.toString()+".png",CELLSIZE*(float)5/6,CELLSIZE*(float)5/6,false,true);
     }
 }

@@ -33,7 +33,7 @@ public class Grass implements WorldElement {
         return false;
     }
     public Image toImage(EnergyParameters parameters, int CELLSIZE) {
-        return new Image("images/grass.png",CELLSIZE*3/5,CELLSIZE*3/5,false,true);
+        return new Image("images/grass.png",CELLSIZE*(float)3/5,CELLSIZE*(float)3/5,false,true);
     }
 
 }

@@ -8,12 +8,6 @@ public abstract class AbstractGenome implements Genome
     private int index;
     protected Random rd = new Random();
 
-    public AbstractGenome(List<Integer> genome, int index){
-        this.genome = genome;
-        this.index = index; // to ma być losowe
-    }
-
-    public AbstractGenome(List<Integer> genome){this(genome,0);}
 
     public AbstractGenome(int length){
         for(int i = 0;i<length;i++){
@@ -59,8 +53,7 @@ public abstract class AbstractGenome implements Genome
         ArrayList<Integer> permutation = new ArrayList<>();
         for(int i=0;i<n;i++) permutation.add(i);
         Collections.shuffle(permutation);
-        List<Integer> res = permutation.subList(0,rd.nextInt(minMutations,maxMutations+1));
-        return res;
+        return permutation.subList(0,rd.nextInt(minMutations,maxMutations+1));
     }
 
     public abstract void mutate(int minMutations, int maxMutations);
