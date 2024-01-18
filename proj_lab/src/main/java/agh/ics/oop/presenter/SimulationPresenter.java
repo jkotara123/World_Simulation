@@ -29,7 +29,7 @@ import java.util.concurrent.Executors;
 
 public class SimulationPresenter implements MapChangeListener {
     @FXML
-    public Label animalStatistics;
+    private Label animalStatistics;
     @FXML
     private Button animalsWithBestGenome;
     @FXML
@@ -52,6 +52,7 @@ public class SimulationPresenter implements MapChangeListener {
     private Label simulationStatistics;
     private Animal followedAnimal = null;
     private static final int CELLSIZE = 45;
+
 
 
     private static final DecimalFormat dfSharp = new DecimalFormat("#.##");
@@ -141,7 +142,11 @@ public class SimulationPresenter implements MapChangeListener {
             if (elem.isAnAnimal()) {
                 img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
                         startFollowing((Animal) elem);
+                        label.setBackground(new Background(new BackgroundFill(Color.rgb(213,31,31),CornerRadii.EMPTY, Insets.EMPTY)));
                 });
+            }
+            if (followedAnimal != null && followedAnimal.getPosition()==elem.getPosition()) {
+                label.setBackground(new Background(new BackgroundFill(Color.rgb(213,31,31), CornerRadii.EMPTY, Insets.EMPTY)));
             }
 
             label.setPrefHeight(CELLSIZE);
@@ -160,7 +165,8 @@ public class SimulationPresenter implements MapChangeListener {
         }
         return null;
     }
-    public void onAnimalsWithBestGenomeClicked(){
+    @FXML
+    private void onAnimalsWithBestGenomeClicked(){
         List<Animal> animals = simulation.animalsWithMostPopularGenome();
         Boundary bounds = this.map.getMapBorders();
         int height = bounds.upperRight().y() - bounds.lowerLeft().y()+1;
@@ -170,7 +176,8 @@ public class SimulationPresenter implements MapChangeListener {
             getLabelOnPosition(newX, newY).setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE,CornerRadii.EMPTY, Insets.EMPTY)));
         }
     }
-    public void onEquatorGrassClicked(){
+    @FXML
+    private void onEquatorGrassClicked(){
         Boundary bounds = this.map.getMapBorders();
         int height = bounds.upperRight().y() - bounds.lowerLeft().y()+1;
         for(Vector2d position :  map.getEquator().allPositions()){
@@ -191,7 +198,7 @@ public class SimulationPresenter implements MapChangeListener {
 
 
     @FXML
-    private void stopSimulation(){
+    public void stopSimulation(){
         executorService.execute(simulation);
         simulation.stopRunning();
   
@@ -221,6 +228,7 @@ public class SimulationPresenter implements MapChangeListener {
             followedAnimal = animal;
             animalStatisticsBox.setVisible(true);
         }
+        showStatistics();
 
     }
 }

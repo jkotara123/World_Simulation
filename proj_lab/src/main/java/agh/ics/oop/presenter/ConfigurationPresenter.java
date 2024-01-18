@@ -12,6 +12,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -31,37 +32,37 @@ public class ConfigurationPresenter {
     @FXML
     private Label errorMessage;
     @FXML
-    public TextField startingGrassAmountTextField;
+    private TextField startingGrassAmountTextField;
     @FXML
-    public TextField startingAnimalAmountTextField;
+    private TextField startingAnimalAmountTextField;
     @FXML
-    public TextField genomeLengthTextField;
+    private TextField genomeLengthTextField;
     @FXML
-    public TextField dailyGrassGrowthTextField;
+    private TextField dailyGrassGrowthTextField;
     @FXML
-    public TextField minChildrenMutationsTextField;
+    private TextField minChildrenMutationsTextField;
     @FXML
-    public TextField maxChildrenMutationsTextField;
+    private TextField maxChildrenMutationsTextField;
     @FXML
-    public TextField energyFromEatingTextField;
+    private TextField energyFromEatingTextField;
     @FXML
-    public TextField energyToReproduceTextField;
+    private TextField energyToReproduceTextField;
     @FXML
-    public TextField energyToMoveTextField;
+    private TextField energyToMoveTextField;
     @FXML
-    public TextField startingEnergyTextField;
+    private TextField startingEnergyTextField;
     @FXML
-    public TextField energyToFullTextField;
+    private TextField energyToFullTextField;
     @FXML
-    public ComboBox<String> mapVariantComboBox;
+    private ComboBox<String> mapVariantComboBox;
     @FXML
-    public ComboBox<String> mapMutationComboBox;
+    private ComboBox<String> mapMutationComboBox;
     @FXML
-    public ComboBox<String> parameters_sets;
+    private ComboBox<String> parameters_sets;
     @FXML
-    public TextField nameField;
+    private TextField nameField;
     @FXML
-    public CheckBox configSave;
+    private CheckBox configSave;
 
     private Simulation simulation;
 
@@ -93,12 +94,13 @@ public class ConfigurationPresenter {
             FileStatsWriter fileStatsWriter = new FileStatsWriter(mapName);
             simulation.addObserver(fileStatsWriter);
         }
+        double height=  Screen.getPrimary().getBounds().getHeight()-100;
+        double width=   Screen.getPrimary().getBounds().getWidth()-100;
 
-        var scene = new Scene(viewRoot);
+        var scene = new Scene(viewRoot,width,height);
         secondaryStage.setScene(scene);
         secondaryStage.setTitle(mapName + " simulation");
-        secondaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
-        secondaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
+        secondaryStage.setOnCloseRequest(event -> presenter.stopSimulation());
 
         secondaryStage.show();
         presenter.runSimulation();
