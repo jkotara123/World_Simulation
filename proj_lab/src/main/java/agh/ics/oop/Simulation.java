@@ -70,10 +70,6 @@ public class Simulation implements Runnable {
             addGenome(animal);
         }
     }
-    public Animal getAnimal(int i) {
-        assert i>=0 && i<animalsAlive.size();
-        return animalsAlive.get(i);
-    }
 
     public WorldMap getMap() {
         return map;
@@ -158,7 +154,7 @@ public class Simulation implements Runnable {
     private void updateDeadAnimalsCount(){
         this.deadAnimalsCount = animalsDead.size();
     }
-    public void updateStats(){
+    private void updateStats(){
         updateDeadAnimalsCount();
         updateAverageChildrenCount();
         updateAverageEnergy();
@@ -208,7 +204,7 @@ public class Simulation implements Runnable {
 
                 try {
                     if (isRunning) {
-                        Thread.sleep(1300);
+                        Thread.sleep(700);
                     }
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);

@@ -44,9 +44,6 @@ public abstract class AbstractGenome implements Genome
         return genome;
     }
 
-    public int getIndex() {
-        return index;
-    }
 
     public int getCurrent(){
         return genome.get(index);
@@ -74,7 +71,6 @@ public abstract class AbstractGenome implements Genome
     }
     @Override
     public boolean equals(Object other){
-//        return true;
         if(this == other) return true;
         if(! (other instanceof Genome)) return false;
         return this.genome.equals(((Genome) other).getGenome());

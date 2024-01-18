@@ -13,7 +13,6 @@ import static java.lang.Math.min;
 import static java.lang.Math.round;
 
 public abstract class AbstractWorldMap implements WorldMap {
-//    private final List<MapChangeListener> observers = new ArrayList<>();
 
     protected final Map<Vector2d, List<Animal>> animalsAlive = new HashMap<>();
     protected final Map<Vector2d, Grass> grasses = new HashMap<>();
@@ -72,19 +71,6 @@ public abstract class AbstractWorldMap implements WorldMap {
         return energyParameters;
     }
 
-//    public void addObserver(MapChangeListener observer){
-//        observers.add(observer);
-//    }
-//
-//    public void removeObserver(MapChangeListener observer){
-//        observers.remove(observer);
-//    }
-
-//    private void mapChanged(String message){
-//        for(MapChangeListener observer: observers){
-//            observer.mapChanged(this,message);
-//        }
-//    }
   
     @Override
     public void placeAnimal(Animal animal){
@@ -112,20 +98,10 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     @Override
     public void move(Animal animal) {
-//        Vector2d oldPosition = animal.getPosition();
-//        MapDirection oldOrientation = animal.getOrientation();
 
         this.removeAnimal(animal);
         animal.move(this);
         this.placeAnimal(animal);
-
-//        if (!animal.getPosition().equals(oldPosition)){
-//            mapChanged("Animal moved from " + oldPosition + " to " + animal.getPosition());
-//        }
-//        if (!animal.getOrientation().equals(oldOrientation)){
-//            mapChanged("Animal on position " + animal.getPosition() +
-//                    " changed orientation from " + oldOrientation + " to " + animal.getOrientation());
-//        }
     }
 
     @Override

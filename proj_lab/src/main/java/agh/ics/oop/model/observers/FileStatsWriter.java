@@ -23,10 +23,10 @@ public class FileStatsWriter implements MapChangeListener {
         pw.print(simulation.getAliveAnimalsCount());
         pw.print(","+simulation.getMap().countGrass());
         pw.print(","+simulation.getMap().emptyPositions().size());
-        pw.print(","+simulation.mostPopularGenome().toString());
-        pw.print(","+simulation.averageEnergy());
-        pw.print(","+simulation.averageLifeSpan());
-        pw.println(","+(simulation.averageChildrenNumber()));
+        pw.print(","+simulation.getMostPopularGenome().toString());
+        pw.print(","+simulation.getAverageEnergy());
+        pw.print(","+simulation.getAverageLifespan());
+        pw.println(","+(simulation.getAverageChildrenCount()));
         pw.flush();
 
     }
