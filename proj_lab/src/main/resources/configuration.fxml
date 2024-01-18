@@ -23,8 +23,6 @@
             <ComboBox fx:id="parameters_sets">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
-<!--                        <String fx:value="Configuration1" />-->
-<!--                        <String fx:value="Configuration2" />-->
                         <String fx:value="My configuration" />
                     </FXCollections>
                 </items>
