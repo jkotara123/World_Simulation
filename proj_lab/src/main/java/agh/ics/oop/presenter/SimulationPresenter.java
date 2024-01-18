@@ -28,7 +28,8 @@ import java.util.concurrent.Executors;
 
 
 public class SimulationPresenter implements MapChangeListener {
-
+    @FXML
+    public Label animalStatistics;
     @FXML
     private Button animalsWithBestGenome;
     @FXML
@@ -116,19 +117,32 @@ public class SimulationPresenter implements MapChangeListener {
                 "Dead animals count: "+simulation.getDeadAnimalsCount()+"\n"+
                 "Average lifespan: "+dfSharp.format(simulation.getAverageLifespan())+"\n"
                 +"The most popular genome:\n"+simulation.getMostPopularGenome());
+        if(followedAnimal!=null){
+            String deathDay = "living :)";
+            if(followedAnimal.getEnergy()<=0) deathDay = String.valueOf(followedAnimal.getDeathDay());
+            animalStatistics.setText("Lifespan: "+followedAnimal.getLifeSpan()+"\n"+
+                    "Energy: "+followedAnimal.getEnergy()+"\n"+
+                    "Genome: "+followedAnimal.getGenome()+"\n"+
+                    "Genome part: "+followedAnimal.getGenome().getCurrent()+"\n"+
+                    "Children count: "+followedAnimal.getChildren().size()+"\n"+
+                    "Grass eaten: "+followedAnimal.getGrassEaten()+"\n"+
+                    "Decdendants count: "+followedAnimal.countDescendants()+"\n"+
+                    "Death day: "+deathDay);
+        }
     }
     private void putElements(int height, Boundary bounds){
         for(WorldElement elem : this.map.getElements()){
             int newX= elem.getPosition().x()-bounds.lowerLeft().x() + 1;
             int newY= height - (elem.getPosition().y()-bounds.lowerLeft().y());
             Label label = new Label("");
+            Image image = elem.toImage(simulation.getSimulationParameters().energyParameters(),CELLSIZE);
+            ImageView img = new ImageView(image);
+
             if (elem.isAnAnimal()) {
-                label.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
                         startFollowing((Animal) elem);
                 });
             }
-            Image image = elem.toImage(simulation.getSimulationParameters().energyParameters(),CELLSIZE);
-            ImageView img = new ImageView(image);
 
             label.setPrefHeight(CELLSIZE);
             label.setPrefWidth(CELLSIZE);
