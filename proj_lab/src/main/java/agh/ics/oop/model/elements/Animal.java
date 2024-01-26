@@ -90,7 +90,7 @@ public class Animal implements WorldElement,Comparable<Animal> {
         this.moveTo(newPosition);
         }
         genome.nextIndex();
-        this.changeEnergy(-map.getEnergyParameters().energyToMove());
+        this.changeEnergy(-map.getEnergyParameters().energyToMove()); // a jeśli zwierzę wpadło do piekielnego portalu?
         getOlder();
     }
 

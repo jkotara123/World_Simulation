@@ -6,7 +6,7 @@ public interface Genome {
     List<Integer> getGenome();
     int getCurrent();
     void nextIndex();
-    List<Integer> chooseToMutate(int minMutations, int maxMutations);
+    List<Integer> chooseToMutate(int minMutations, int maxMutations); // to jest publiczne?
     void mutate(int minMutations, int maxMutations);
 
 }

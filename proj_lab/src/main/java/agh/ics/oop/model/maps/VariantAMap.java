@@ -6,14 +6,14 @@ import agh.ics.oop.model.elements.Animal;
 
 import java.util.Random;
 
-public class VariantAMap extends AbstractWorldMap implements WorldMap {
+public class VariantAMap extends AbstractWorldMap implements WorldMap { // średnio czytelna nazwa
 
     public VariantAMap(Boundary mapBorders, EnergyParameters energyParameters) {
         super(mapBorders, energyParameters);
     }
     @Override
     public Vector2d nextPosition(Animal animal) {
-        Random rd = new Random();
+        Random rd = new Random(); // co wywołanie?
         return new Vector2d(rd.nextInt(this.mapBorders.upperRight().x()), rd.nextInt(this.mapBorders.upperRight().y()));
     }
 }

@@ -30,38 +30,38 @@ public abstract class AbstractWorldMap implements WorldMap {
         this.mapBorders = mapBorders;
         this.energyParameters = energyParameters;
 
-        int height = mapBorders.upperRight().y()-mapBorders.lowerLeft().y()+1;
-        int lowEq = (height%2==0) ? height/2-1 - round((float) height /10)+1 : height/2 - round((float) height /10)+1;
-        int highEq = height/2 + round((float) height /10)-1;
-        this.equator = new Boundary(new Vector2d(0, lowEq),new Vector2d(mapBorders.upperRight().x(),highEq));
+        int height = mapBorders.upperRight().y() - mapBorders.lowerLeft().y() + 1;
+        int lowEq = (height % 2 == 0) ? height / 2 - 1 - round((float) height / 10) + 1 : height / 2 - round((float) height / 10) + 1;
+        int highEq = height / 2 + round((float) height / 10) - 1;
+        this.equator = new Boundary(new Vector2d(0, lowEq), new Vector2d(mapBorders.upperRight().x(), highEq));
 
         this.emptyPlacesOnEquator = new ArrayList<>();
         emptyPlacesOnEquator.addAll(equator.allPositions());
-        List<Vector2d> belowEq = new Boundary(mapBorders.lowerLeft(),new Vector2d(equator.upperRight().x(), equator.lowerLeft().y()-1)).allPositions();
-        List<Vector2d> aboveEq = new Boundary(new Vector2d(equator.lowerLeft().x(),equator.upperRight().y()+1),mapBorders.upperRight()).allPositions();
+        List<Vector2d> belowEq = new Boundary(mapBorders.lowerLeft(), new Vector2d(equator.upperRight().x(), equator.lowerLeft().y() - 1)).allPositions();
+        List<Vector2d> aboveEq = new Boundary(new Vector2d(equator.lowerLeft().x(), equator.upperRight().y() + 1), mapBorders.upperRight()).allPositions();
         emptyPlacesNotOnEquator = new ArrayList<>(belowEq);
         emptyPlacesNotOnEquator.addAll(aboveEq);
 
     }
-  
-    public Boundary getMapBorders(){
+
+    public Boundary getMapBorders() {
         return mapBorders;
     }
-    public Boundary getEquator(){
+
+    public Boundary getEquator() {
         return this.equator;
     }
-  
-    public Map<Vector2d,Grass> getGrasses(){
-        return grasses;
+
+    public Map<Vector2d, Grass> getGrasses() {
+        return grasses; // dehermetyzacja
     }
 
 
-  
-      @Override
+    @Override
     public List<WorldElement> getElements() {
         List<WorldElement> elements = new ArrayList<>();
-        for(Vector2d position : mapBorders.allPositions()){
-            if(!animalsAt(position).isEmpty()) elements.addAll(kWinners(position,1));
+        for (Vector2d position : mapBorders.allPositions()) {
+            if (!animalsAt(position).isEmpty()) elements.addAll(kWinners(position, 1));
             else if (grasses.containsKey(position)) elements.add(grasses.get(position));
         }
         return elements;
@@ -71,10 +71,10 @@ public abstract class AbstractWorldMap implements WorldMap {
         return energyParameters;
     }
 
-  
+
     @Override
-    public void placeAnimal(Animal animal){
-        animalsAlive.computeIfAbsent(animal.getPosition(),position->new ArrayList<>());
+    public void placeAnimal(Animal animal) {
+        animalsAlive.computeIfAbsent(animal.getPosition(), position -> new ArrayList<>());
         animalsAlive.get(animal.getPosition()).add(animal);
     }
 
@@ -83,15 +83,17 @@ public abstract class AbstractWorldMap implements WorldMap {
     public void removeAnimal(Animal animal) {
         animalsAlive.get(animal.getPosition()).remove(animal);
     }
+
     @Override
     public void placeGrass(Grass grass) {
-        grasses.put(grass.getPosition(),grass);
-        if(grass.isOnEquator(equator)) emptyPlacesOnEquator.remove(grass.getPosition());
+        grasses.put(grass.getPosition(), grass);
+        if (grass.isOnEquator(equator)) emptyPlacesOnEquator.remove(grass.getPosition());
         else emptyPlacesNotOnEquator.remove(grass.getPosition());
     }
+
     @Override
-    public void removeGrass(Grass grass){
-        if(grass.isOnEquator(equator)) emptyPlacesOnEquator.add(grass.getPosition());
+    public void removeGrass(Grass grass) {
+        if (grass.isOnEquator(equator)) emptyPlacesOnEquator.add(grass.getPosition());
         else emptyPlacesNotOnEquator.add(grass.getPosition());
         grasses.remove(grass.getPosition());
     }
@@ -106,11 +108,12 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     @Override
     public List<Animal> animalsAt(Vector2d position) {
-        animalsAlive.computeIfAbsent(position,k->new ArrayList<>());
+        animalsAlive.computeIfAbsent(position, k -> new ArrayList<>());
         return animalsAlive.get(position);
     }
+
     @Override
-    public List<Animal> kWinners(Vector2d position, int k){
+    public List<Animal> kWinners(Vector2d position, int k) {
         return animalsAt(position).stream()
                 .sorted(Collections.reverseOrder())
                 .limit(k)
@@ -120,8 +123,8 @@ public abstract class AbstractWorldMap implements WorldMap {
 
 
     public void eatGrass(Grass grass) {
-        if (!animalsAt(grass.getPosition()).isEmpty()){
-            kWinners(grass.getPosition(),1).get(0).eat(energyParameters.energyFromEating());
+        if (!animalsAt(grass.getPosition()).isEmpty()) {
+            kWinners(grass.getPosition(), 1).get(0).eat(energyParameters.energyFromEating());
             removeGrass(grass);
         }
     }
@@ -139,37 +142,36 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     @Override
-    public void growGrass(int grassAmount){
-        int maxGrass = min(grassAmount,emptyPlacesNotOnEquator.size()+emptyPlacesOnEquator.size());
-        Random rn = new Random();
+    public void growGrass(int grassAmount) {
+        int maxGrass = min(grassAmount, emptyPlacesNotOnEquator.size() + emptyPlacesOnEquator.size());
+        Random rn = new Random(); // co wywołanie?
         int newEquatorGrassAmount = 0;
         int newNoEquatorGrassAmount = 0;
-        for(int i = 0;i<maxGrass;i++){
-            if (rn.nextInt(5)<4){
-                newEquatorGrassAmount+=1;
-            }
-            else newNoEquatorGrassAmount+=1;
+        for (int i = 0; i < maxGrass; i++) {
+            if (rn.nextInt(5) < 4) {
+                newEquatorGrassAmount += 1;
+            } else newNoEquatorGrassAmount += 1;
         }
-        if (emptyPlacesNotOnEquator.size()<newNoEquatorGrassAmount){
-            newEquatorGrassAmount+=newNoEquatorGrassAmount-emptyPlacesNotOnEquator.size();
+        if (emptyPlacesNotOnEquator.size() < newNoEquatorGrassAmount) {
+            newEquatorGrassAmount += newNoEquatorGrassAmount - emptyPlacesNotOnEquator.size();
             newNoEquatorGrassAmount = emptyPlacesNotOnEquator.size();
-        }
-        else if (emptyPlacesOnEquator.size()<newEquatorGrassAmount){
-            newNoEquatorGrassAmount += newEquatorGrassAmount-emptyPlacesOnEquator.size();
+        } else if (emptyPlacesOnEquator.size() < newEquatorGrassAmount) {
+            newNoEquatorGrassAmount += newEquatorGrassAmount - emptyPlacesOnEquator.size();
             newEquatorGrassAmount = emptyPlacesOnEquator.size();
         }
-        for (Vector2d position: randomPositionsGenerator.kPositionsNoRepetition(emptyPlacesOnEquator,newEquatorGrassAmount)){
+        for (Vector2d position : randomPositionsGenerator.kPositionsNoRepetition(emptyPlacesOnEquator, newEquatorGrassAmount)) {
             placeGrass(new Grass(position));
         }
-        for (Vector2d position: randomPositionsGenerator.kPositionsNoRepetition(emptyPlacesNotOnEquator,newNoEquatorGrassAmount)){
+        for (Vector2d position : randomPositionsGenerator.kPositionsNoRepetition(emptyPlacesNotOnEquator, newNoEquatorGrassAmount)) {
             placeGrass(new Grass(position));
         }
     }
 
-    public boolean canMove(Animal animal){
+    public boolean canMove(Animal animal) {
         Vector2d newPosition = animal.getPosition().add(animal.getOrientation().toUnitVector());
         return (newPosition.precedes(mapBorders.upperRight()) && newPosition.follows(mapBorders.lowerLeft()));
     }
+
     public abstract Vector2d nextPosition(Animal animal);
 
     @Override

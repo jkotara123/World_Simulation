@@ -1,4 +1,4 @@
-package agh.ics.oop.model.enums;
+package agh.ics.oop.model.enums; // czy bycie enumem wystarcza, żeby mieć osobny pakiet?
 
 import agh.ics.oop.model.Vector2d;
 
@@ -12,7 +12,7 @@ public enum MapDirection {
     WEST,
     NORTH_WEST;
 
-    private static final Vector2d NORTH_VECTOR = new Vector2d(0,1);
+    private static final Vector2d NORTH_VECTOR = new Vector2d(0,1); // parametr konstruktora by nie był wygodniejszy?
     private static final Vector2d NORTH_EAST_VECTOR = new Vector2d(1,1);
     private static final Vector2d EAST_VECTOR = new Vector2d(1,0);
     private static final Vector2d SOUTH_EAST_VECTOR = new Vector2d(1,-1);
